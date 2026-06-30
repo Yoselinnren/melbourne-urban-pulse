@@ -1,0 +1,2468 @@
+{
+  "schema_version": "0.1.0",
+  "metadata": {
+    "project": "Melbourne Urban Pulse",
+    "dataset_name": "example_dashboard_data",
+    "created_at": "2026-06-30T20:55:00+10:00",
+    "created_by": "schema design mock",
+    "description": "Small mock dashboard dataset for schema validation only. Values are illustrative placeholders, not final processed analytical output.",
+    "is_mock": true,
+    "timezone": "Australia/Melbourne",
+    "spatial_reference": "WGS84 latitude/longitude"
+  },
+  "provenance": {
+    "profile_inputs": [
+      "data/metadata/raw_data_profile.json",
+      "docs/data-profile.md"
+    ],
+    "sources": [
+      {
+        "source_id": "pedestrian_counts",
+        "source_type": "observed_data",
+        "local_path": "data/raw/pedestrian/pedestrian_counts_hourly_full.csv",
+        "used_in_mvp": true,
+        "field_role": "hourly pedestrian observations",
+        "notes": "Raw source spans 2024-06-29 to 2026-06-28; MVP processing should filter to 2025."
+      },
+      {
+        "source_id": "pedestrian_sensors",
+        "source_type": "source_metadata",
+        "local_path": "data/raw/sensors/pedestrian_sensor_locations.csv",
+        "used_in_mvp": true,
+        "field_role": "sensor names, status, coordinates, and location metadata",
+        "notes": "All profiled sensors are active, but sensor names are not fully unique."
+      },
+      {
+        "source_id": "open_meteo_weather_json",
+        "source_type": "context_data",
+        "local_path": "data/raw/weather/open_meteo_melbourne_hourly_2025.json",
+        "used_in_mvp": true,
+        "field_role": "hourly weather context",
+        "notes": "Preferred weather source because it has clean aligned hourly arrays for 2025."
+      },
+      {
+        "source_id": "victoria_important_dates",
+        "source_type": "context_data",
+        "local_path": "data/raw/calendar/victoria_important_dates_2025.csv",
+        "used_in_mvp": true,
+        "field_role": "calendar flags and important dates",
+        "notes": "Raw source spans multiple years and should be filtered to 2025."
+      },
+      {
+        "source_id": "planned_works_datavic",
+        "source_type": "auxiliary_reference",
+        "local_path": "data/raw/events/city_activities_planned_works_datavic.json",
+        "used_in_mvp": false,
+        "field_role": "future disruption context and manual explanation support",
+        "notes": "Auxiliary only for MVP because the current local copy does not align cleanly with 2025."
+      }
+    ]
+  },
+  "study_period": {
+    "start": "2025-01-01T00:00:00+11:00",
+    "end": "2025-12-31T23:00:00+11:00",
+    "display_label": "Calendar year 2025",
+    "selected_reason": "Weather data fully covers 2025 hourly, calendar context includes 2025, and pedestrian counts include 2025 observations across active sensors."
+  },
+  "field_definitions": {
+    "observed": [
+      "observed_count",
+      "direction_1_count",
+      "direction_2_count",
+      "temperature_2m",
+      "apparent_temperature",
+      "relative_humidity_2m",
+      "precipitation",
+      "rain",
+      "wind_speed_10m",
+      "weather_code",
+      "sensor.coordinates",
+      "sensor.status"
+    ],
+    "derived": [
+      "baseline_count",
+      "activity_intensity",
+      "baseline_deviation",
+      "weather_comfort_score",
+      "weather_disruption_flag",
+      "pulse_score",
+      "anomaly_score",
+      "confidence_score"
+    ],
+    "manual_annotation": [
+      "explanation_cards",
+      "possible_causes",
+      "event_reference"
+    ],
+    "future_edge_signal_placeholder": [
+      "edge_density_estimate",
+      "infrastructure_pressure_proxy",
+      "interpolated_surface_value"
+    ]
+  },
+  "sensors": [
+    {
+      "sensor_id": "4",
+      "sensor_name": "Swa123_T",
+      "description": "Town Hall (West)",
+      "status": "A",
+      "location_type": "Outdoor",
+      "coordinates": {
+        "latitude": -37.81487988,
+        "longitude": 144.9660878
+      },
+      "display": {
+        "precinct": "Civic Core",
+        "short_label": "Town Hall"
+      },
+      "selection_reason": "High-activity central CBD sensor suitable for a civic pulse story.",
+      "confidence": {
+        "metadata_confidence": 0.95,
+        "coverage_note": "Profiled with 8759 hourly rows in 2025."
+      }
+    },
+    {
+      "sensor_id": "3",
+      "sensor_name": "Swa295_T",
+      "description": "Melbourne Central",
+      "status": "A",
+      "location_type": "Outdoor",
+      "coordinates": {
+        "latitude": -37.81101524,
+        "longitude": 144.96429485
+      },
+      "display": {
+        "precinct": "Retail / Transit",
+        "short_label": "Melbourne Central"
+      },
+      "selection_reason": "High-activity retail and transit-adjacent location.",
+      "confidence": {
+        "metadata_confidence": 0.95,
+        "coverage_note": "Profiled with 8759 hourly rows in 2025."
+      }
+    },
+    {
+      "sensor_id": "133",
+      "sensor_name": "Spen229_T",
+      "description": "I-Hub Southern Cross Station - Lonsdale Street Entrance - South",
+      "status": "A",
+      "location_type": "Outdoor",
+      "coordinates": {
+        "latitude": -37.81531435,
+        "longitude": 144.95227769
+      },
+      "display": {
+        "precinct": "Station Gateway",
+        "short_label": "Southern Cross"
+      },
+      "selection_reason": "Transport-oriented comparison point west of the CBD core.",
+      "confidence": {
+        "metadata_confidence": 0.95,
+        "coverage_note": "Profiled with 8759 hourly rows in 2025."
+      }
+    }
+  ],
+  "calendar_context": [
+    {
+      "date": "2025-01-01",
+      "weekday": "Wednesday",
+      "is_weekend": false,
+      "is_public_holiday": true,
+      "is_school_term": false,
+      "is_school_holiday": true,
+      "season": "summer",
+      "important_dates": [
+        {
+          "name": "New Year's Day",
+          "type": "PUBLIC_HOLIDAY",
+          "source_status": "placeholder"
+        }
+      ],
+      "source_quality": {
+        "origin": "calendar_context",
+        "confidence_score": 0.8
+      }
+    }
+  ],
+  "hourly_records": [
+    {
+      "timestamp": "2025-01-01T00:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 0,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.6,
+        "apparent_temperature": 16.7,
+        "relative_humidity_2m": 76,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 4.9,
+        "weather_code": 0,
+        "weather_comfort_score": 0.82,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1840,
+          "direction_1_count": 930,
+          "direction_2_count": 910,
+          "baseline_count": 920,
+          "activity_intensity": 0.88,
+          "baseline_deviation": 1,
+          "pulse_score": 0.92,
+          "anomaly_score": 0.68,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.86
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1420,
+          "direction_1_count": 700,
+          "direction_2_count": 720,
+          "baseline_count": 780,
+          "activity_intensity": 0.8,
+          "baseline_deviation": 0.82,
+          "pulse_score": 0.84,
+          "anomaly_score": 0.55,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 960,
+          "direction_1_count": 520,
+          "direction_2_count": 440,
+          "baseline_count": 620,
+          "activity_intensity": 0.64,
+          "baseline_deviation": 0.55,
+          "pulse_score": 0.66,
+          "anomaly_score": 0.38,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 4220,
+        "mean_pulse_score": 0.81,
+        "max_anomaly_score": 0.68,
+        "dominant_context": "public_holiday_night"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T00",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.84
+      }
+    },
+    {
+      "timestamp": "2025-01-01T01:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 1,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.2,
+        "apparent_temperature": 16.6,
+        "relative_humidity_2m": 80,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 3.6,
+        "weather_code": 0,
+        "weather_comfort_score": 0.8,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1320,
+          "direction_1_count": 660,
+          "direction_2_count": 660,
+          "baseline_count": 720,
+          "activity_intensity": 0.74,
+          "baseline_deviation": 0.83,
+          "pulse_score": 0.78,
+          "anomaly_score": 0.5,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.86
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1100,
+          "direction_1_count": 540,
+          "direction_2_count": 560,
+          "baseline_count": 650,
+          "activity_intensity": 0.69,
+          "baseline_deviation": 0.69,
+          "pulse_score": 0.72,
+          "anomaly_score": 0.42,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 760,
+          "direction_1_count": 390,
+          "direction_2_count": 370,
+          "baseline_count": 520,
+          "activity_intensity": 0.55,
+          "baseline_deviation": 0.46,
+          "pulse_score": 0.58,
+          "anomaly_score": 0.31,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 3180,
+        "mean_pulse_score": 0.69,
+        "max_anomaly_score": 0.5,
+        "dominant_context": "public_holiday_night"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T01",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.84
+      }
+    },
+    {
+      "timestamp": "2025-01-01T02:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 2,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 15.8,
+        "apparent_temperature": 16.2,
+        "relative_humidity_2m": 83,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 3.2,
+        "weather_code": 0,
+        "weather_comfort_score": 0.78,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 880,
+          "direction_1_count": 430,
+          "direction_2_count": 450,
+          "baseline_count": 510,
+          "activity_intensity": 0.58,
+          "baseline_deviation": 0.73,
+          "pulse_score": 0.62,
+          "anomaly_score": 0.36,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 720,
+          "direction_1_count": 350,
+          "direction_2_count": 370,
+          "baseline_count": 460,
+          "activity_intensity": 0.52,
+          "baseline_deviation": 0.57,
+          "pulse_score": 0.56,
+          "anomaly_score": 0.3,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 480,
+          "direction_1_count": 250,
+          "direction_2_count": 230,
+          "baseline_count": 390,
+          "activity_intensity": 0.42,
+          "baseline_deviation": 0.23,
+          "pulse_score": 0.45,
+          "anomaly_score": 0.18,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 2080,
+        "mean_pulse_score": 0.54,
+        "max_anomaly_score": 0.36,
+        "dominant_context": "public_holiday_night"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T02",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T03:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 3,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 15.4,
+        "apparent_temperature": 15.8,
+        "relative_humidity_2m": 85,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 3.7,
+        "weather_code": 0,
+        "weather_comfort_score": 0.76,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 520,
+          "direction_1_count": 260,
+          "direction_2_count": 260,
+          "baseline_count": 360,
+          "activity_intensity": 0.42,
+          "baseline_deviation": 0.44,
+          "pulse_score": 0.47,
+          "anomaly_score": 0.2,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 430,
+          "direction_1_count": 210,
+          "direction_2_count": 220,
+          "baseline_count": 330,
+          "activity_intensity": 0.38,
+          "baseline_deviation": 0.3,
+          "pulse_score": 0.41,
+          "anomaly_score": 0.16,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 300,
+          "direction_1_count": 160,
+          "direction_2_count": 140,
+          "baseline_count": 280,
+          "activity_intensity": 0.32,
+          "baseline_deviation": 0.07,
+          "pulse_score": 0.34,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 1250,
+        "mean_pulse_score": 0.41,
+        "max_anomaly_score": 0.2,
+        "dominant_context": "late_night_low_activity"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T03",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T04:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 4,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 14.9,
+        "apparent_temperature": 14.9,
+        "relative_humidity_2m": 86,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 6.3,
+        "weather_code": 1,
+        "weather_comfort_score": 0.72,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 310,
+          "direction_1_count": 150,
+          "direction_2_count": 160,
+          "baseline_count": 240,
+          "activity_intensity": 0.3,
+          "baseline_deviation": 0.29,
+          "pulse_score": 0.34,
+          "anomaly_score": 0.12,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 260,
+          "direction_1_count": 130,
+          "direction_2_count": 130,
+          "baseline_count": 220,
+          "activity_intensity": 0.27,
+          "baseline_deviation": 0.18,
+          "pulse_score": 0.3,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 210,
+          "direction_1_count": 110,
+          "direction_2_count": 100,
+          "baseline_count": 200,
+          "activity_intensity": 0.24,
+          "baseline_deviation": 0.05,
+          "pulse_score": 0.26,
+          "anomaly_score": 0.08,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 780,
+        "mean_pulse_score": 0.3,
+        "max_anomaly_score": 0.12,
+        "dominant_context": "late_night_low_activity"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T04",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T05:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 5,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 14.6,
+        "apparent_temperature": 14.2,
+        "relative_humidity_2m": 86,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 8,
+        "weather_code": 1,
+        "weather_comfort_score": 0.7,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 420,
+          "direction_1_count": 210,
+          "direction_2_count": 210,
+          "baseline_count": 280,
+          "activity_intensity": 0.35,
+          "baseline_deviation": 0.5,
+          "pulse_score": 0.39,
+          "anomaly_score": 0.18,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 390,
+          "direction_1_count": 190,
+          "direction_2_count": 200,
+          "baseline_count": 260,
+          "activity_intensity": 0.34,
+          "baseline_deviation": 0.5,
+          "pulse_score": 0.38,
+          "anomaly_score": 0.17,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 330,
+          "direction_1_count": 180,
+          "direction_2_count": 150,
+          "baseline_count": 240,
+          "activity_intensity": 0.31,
+          "baseline_deviation": 0.38,
+          "pulse_score": 0.34,
+          "anomaly_score": 0.14,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 1140,
+        "mean_pulse_score": 0.37,
+        "max_anomaly_score": 0.18,
+        "dominant_context": "early_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T05",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T06:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 6,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 15.1,
+        "apparent_temperature": 14.2,
+        "relative_humidity_2m": 80,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 9.4,
+        "weather_code": 1,
+        "weather_comfort_score": 0.72,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 620,
+          "direction_1_count": 310,
+          "direction_2_count": 310,
+          "baseline_count": 430,
+          "activity_intensity": 0.44,
+          "baseline_deviation": 0.44,
+          "pulse_score": 0.48,
+          "anomaly_score": 0.2,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 590,
+          "direction_1_count": 290,
+          "direction_2_count": 300,
+          "baseline_count": 410,
+          "activity_intensity": 0.42,
+          "baseline_deviation": 0.44,
+          "pulse_score": 0.46,
+          "anomaly_score": 0.19,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 520,
+          "direction_1_count": 270,
+          "direction_2_count": 250,
+          "baseline_count": 360,
+          "activity_intensity": 0.4,
+          "baseline_deviation": 0.44,
+          "pulse_score": 0.43,
+          "anomaly_score": 0.17,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 1730,
+        "mean_pulse_score": 0.46,
+        "max_anomaly_score": 0.2,
+        "dominant_context": "public_holiday_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T06",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T07:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 7,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.1,
+        "apparent_temperature": 14.6,
+        "relative_humidity_2m": 70,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 12.1,
+        "weather_code": 2,
+        "weather_comfort_score": 0.74,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 840,
+          "direction_1_count": 430,
+          "direction_2_count": 410,
+          "baseline_count": 720,
+          "activity_intensity": 0.55,
+          "baseline_deviation": 0.17,
+          "pulse_score": 0.57,
+          "anomaly_score": 0.12,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 780,
+          "direction_1_count": 390,
+          "direction_2_count": 390,
+          "baseline_count": 680,
+          "activity_intensity": 0.53,
+          "baseline_deviation": 0.15,
+          "pulse_score": 0.55,
+          "anomaly_score": 0.11,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 700,
+          "direction_1_count": 360,
+          "direction_2_count": 340,
+          "baseline_count": 600,
+          "activity_intensity": 0.5,
+          "baseline_deviation": 0.17,
+          "pulse_score": 0.52,
+          "anomaly_score": 0.11,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 2320,
+        "mean_pulse_score": 0.55,
+        "max_anomaly_score": 0.12,
+        "dominant_context": "public_holiday_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T07",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T08:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 8,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 17,
+        "apparent_temperature": 15.5,
+        "relative_humidity_2m": 65,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 10.9,
+        "weather_code": 2,
+        "weather_comfort_score": 0.78,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1120,
+          "direction_1_count": 570,
+          "direction_2_count": 550,
+          "baseline_count": 1150,
+          "activity_intensity": 0.64,
+          "baseline_deviation": -0.03,
+          "pulse_score": 0.62,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1050,
+          "direction_1_count": 520,
+          "direction_2_count": 530,
+          "baseline_count": 1040,
+          "activity_intensity": 0.62,
+          "baseline_deviation": 0.01,
+          "pulse_score": 0.61,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 980,
+          "direction_1_count": 520,
+          "direction_2_count": 460,
+          "baseline_count": 930,
+          "activity_intensity": 0.59,
+          "baseline_deviation": 0.05,
+          "pulse_score": 0.59,
+          "anomaly_score": 0.06,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 3150,
+        "mean_pulse_score": 0.61,
+        "max_anomaly_score": 0.06,
+        "dominant_context": "public_holiday_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T08",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T09:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 9,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 18,
+        "apparent_temperature": 16.5,
+        "relative_humidity_2m": 61,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 11,
+        "weather_code": 3,
+        "weather_comfort_score": 0.8,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1560,
+          "direction_1_count": 800,
+          "direction_2_count": 760,
+          "baseline_count": 1480,
+          "activity_intensity": 0.72,
+          "baseline_deviation": 0.05,
+          "pulse_score": 0.71,
+          "anomaly_score": 0.08,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1380,
+          "direction_1_count": 690,
+          "direction_2_count": 690,
+          "baseline_count": 1300,
+          "activity_intensity": 0.68,
+          "baseline_deviation": 0.06,
+          "pulse_score": 0.67,
+          "anomaly_score": 0.08,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1260,
+          "direction_1_count": 660,
+          "direction_2_count": 600,
+          "baseline_count": 1150,
+          "activity_intensity": 0.64,
+          "baseline_deviation": 0.1,
+          "pulse_score": 0.64,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 4200,
+        "mean_pulse_score": 0.67,
+        "max_anomaly_score": 0.1,
+        "dominant_context": "public_holiday_late_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T09",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T10:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 10,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 18.9,
+        "apparent_temperature": 17.8,
+        "relative_humidity_2m": 56,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 10.7,
+        "weather_code": 1,
+        "weather_comfort_score": 0.84,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2140,
+          "direction_1_count": 1080,
+          "direction_2_count": 1060,
+          "baseline_count": 1900,
+          "activity_intensity": 0.8,
+          "baseline_deviation": 0.13,
+          "pulse_score": 0.8,
+          "anomaly_score": 0.16,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1760,
+          "direction_1_count": 880,
+          "direction_2_count": 880,
+          "baseline_count": 1600,
+          "activity_intensity": 0.74,
+          "baseline_deviation": 0.1,
+          "pulse_score": 0.74,
+          "anomaly_score": 0.13,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1480,
+          "direction_1_count": 770,
+          "direction_2_count": 710,
+          "baseline_count": 1320,
+          "activity_intensity": 0.68,
+          "baseline_deviation": 0.12,
+          "pulse_score": 0.68,
+          "anomaly_score": 0.14,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 5380,
+        "mean_pulse_score": 0.74,
+        "max_anomaly_score": 0.16,
+        "dominant_context": "public_holiday_late_morning"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T10",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T11:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 11,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 19.5,
+        "apparent_temperature": 18.9,
+        "relative_humidity_2m": 50,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 11.6,
+        "weather_code": 0,
+        "weather_comfort_score": 0.86,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2680,
+          "direction_1_count": 1360,
+          "direction_2_count": 1320,
+          "baseline_count": 2200,
+          "activity_intensity": 0.88,
+          "baseline_deviation": 0.22,
+          "pulse_score": 0.88,
+          "anomaly_score": 0.28,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 2120,
+          "direction_1_count": 1080,
+          "direction_2_count": 1040,
+          "baseline_count": 1780,
+          "activity_intensity": 0.8,
+          "baseline_deviation": 0.19,
+          "pulse_score": 0.8,
+          "anomaly_score": 0.24,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1680,
+          "direction_1_count": 880,
+          "direction_2_count": 800,
+          "baseline_count": 1500,
+          "activity_intensity": 0.72,
+          "baseline_deviation": 0.12,
+          "pulse_score": 0.72,
+          "anomaly_score": 0.16,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 6480,
+        "mean_pulse_score": 0.8,
+        "max_anomaly_score": 0.28,
+        "dominant_context": "public_holiday_midday"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T11",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T12:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 12,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20,
+        "apparent_temperature": 20.3,
+        "relative_humidity_2m": 46,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 12.4,
+        "weather_code": 0,
+        "weather_comfort_score": 0.88,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 3040,
+          "direction_1_count": 1540,
+          "direction_2_count": 1500,
+          "baseline_count": 2450,
+          "activity_intensity": 0.93,
+          "baseline_deviation": 0.24,
+          "pulse_score": 0.93,
+          "anomaly_score": 0.32,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 2420,
+          "direction_1_count": 1220,
+          "direction_2_count": 1200,
+          "baseline_count": 2050,
+          "activity_intensity": 0.84,
+          "baseline_deviation": 0.18,
+          "pulse_score": 0.84,
+          "anomaly_score": 0.24,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1840,
+          "direction_1_count": 960,
+          "direction_2_count": 880,
+          "baseline_count": 1680,
+          "activity_intensity": 0.75,
+          "baseline_deviation": 0.1,
+          "pulse_score": 0.75,
+          "anomaly_score": 0.14,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 7300,
+        "mean_pulse_score": 0.84,
+        "max_anomaly_score": 0.32,
+        "dominant_context": "public_holiday_midday"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T12",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T13:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 13,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20.4,
+        "apparent_temperature": 20.9,
+        "relative_humidity_2m": 46,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 12.6,
+        "weather_code": 0,
+        "weather_comfort_score": 0.88,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2980,
+          "direction_1_count": 1500,
+          "direction_2_count": 1480,
+          "baseline_count": 2500,
+          "activity_intensity": 0.92,
+          "baseline_deviation": 0.19,
+          "pulse_score": 0.91,
+          "anomaly_score": 0.26,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 2380,
+          "direction_1_count": 1190,
+          "direction_2_count": 1190,
+          "baseline_count": 2080,
+          "activity_intensity": 0.83,
+          "baseline_deviation": 0.14,
+          "pulse_score": 0.82,
+          "anomaly_score": 0.2,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1760,
+          "direction_1_count": 910,
+          "direction_2_count": 850,
+          "baseline_count": 1660,
+          "activity_intensity": 0.73,
+          "baseline_deviation": 0.06,
+          "pulse_score": 0.73,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 7120,
+        "mean_pulse_score": 0.82,
+        "max_anomaly_score": 0.26,
+        "dominant_context": "public_holiday_afternoon"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T13",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T14:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 14,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20.5,
+        "apparent_temperature": 20.5,
+        "relative_humidity_2m": 47,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 14.8,
+        "weather_code": 0,
+        "weather_comfort_score": 0.86,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2760,
+          "direction_1_count": 1390,
+          "direction_2_count": 1370,
+          "baseline_count": 2420,
+          "activity_intensity": 0.88,
+          "baseline_deviation": 0.14,
+          "pulse_score": 0.87,
+          "anomaly_score": 0.2,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 2200,
+          "direction_1_count": 1100,
+          "direction_2_count": 1100,
+          "baseline_count": 2020,
+          "activity_intensity": 0.79,
+          "baseline_deviation": 0.09,
+          "pulse_score": 0.78,
+          "anomaly_score": 0.14,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1600,
+          "direction_1_count": 830,
+          "direction_2_count": 770,
+          "baseline_count": 1580,
+          "activity_intensity": 0.69,
+          "baseline_deviation": 0.01,
+          "pulse_score": 0.68,
+          "anomaly_score": 0.06,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 6560,
+        "mean_pulse_score": 0.78,
+        "max_anomaly_score": 0.2,
+        "dominant_context": "public_holiday_afternoon"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T14",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T15:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 15,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20.9,
+        "apparent_temperature": 20,
+        "relative_humidity_2m": 53,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 19.6,
+        "weather_code": 0,
+        "weather_comfort_score": 0.8,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2500,
+          "direction_1_count": 1250,
+          "direction_2_count": 1250,
+          "baseline_count": 2300,
+          "activity_intensity": 0.84,
+          "baseline_deviation": 0.09,
+          "pulse_score": 0.82,
+          "anomaly_score": 0.14,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 2020,
+          "direction_1_count": 1010,
+          "direction_2_count": 1010,
+          "baseline_count": 1940,
+          "activity_intensity": 0.75,
+          "baseline_deviation": 0.04,
+          "pulse_score": 0.74,
+          "anomaly_score": 0.09,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1510,
+          "direction_1_count": 780,
+          "direction_2_count": 730,
+          "baseline_count": 1520,
+          "activity_intensity": 0.67,
+          "baseline_deviation": -0.01,
+          "pulse_score": 0.65,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 6030,
+        "mean_pulse_score": 0.74,
+        "max_anomaly_score": 0.14,
+        "dominant_context": "public_holiday_afternoon"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T15",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T16:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 16,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20.2,
+        "apparent_temperature": 18.9,
+        "relative_humidity_2m": 55,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 18.2,
+        "weather_code": 0,
+        "weather_comfort_score": 0.8,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2300,
+          "direction_1_count": 1160,
+          "direction_2_count": 1140,
+          "baseline_count": 2150,
+          "activity_intensity": 0.8,
+          "baseline_deviation": 0.07,
+          "pulse_score": 0.78,
+          "anomaly_score": 0.12,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1880,
+          "direction_1_count": 940,
+          "direction_2_count": 940,
+          "baseline_count": 1820,
+          "activity_intensity": 0.72,
+          "baseline_deviation": 0.03,
+          "pulse_score": 0.7,
+          "anomaly_score": 0.08,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1480,
+          "direction_1_count": 770,
+          "direction_2_count": 710,
+          "baseline_count": 1480,
+          "activity_intensity": 0.66,
+          "baseline_deviation": 0,
+          "pulse_score": 0.64,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 5660,
+        "mean_pulse_score": 0.71,
+        "max_anomaly_score": 0.12,
+        "dominant_context": "public_holiday_late_afternoon"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T16",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T17:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 17,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 20,
+        "apparent_temperature": 17.4,
+        "relative_humidity_2m": 56,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 20,
+        "weather_code": 3,
+        "weather_comfort_score": 0.74,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 2160,
+          "direction_1_count": 1080,
+          "direction_2_count": 1080,
+          "baseline_count": 2050,
+          "activity_intensity": 0.78,
+          "baseline_deviation": 0.05,
+          "pulse_score": 0.75,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.85
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1780,
+          "direction_1_count": 890,
+          "direction_2_count": 890,
+          "baseline_count": 1760,
+          "activity_intensity": 0.7,
+          "baseline_deviation": 0.01,
+          "pulse_score": 0.68,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.83
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1520,
+          "direction_1_count": 800,
+          "direction_2_count": 720,
+          "baseline_count": 1500,
+          "activity_intensity": 0.67,
+          "baseline_deviation": 0.01,
+          "pulse_score": 0.64,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.81
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 5460,
+        "mean_pulse_score": 0.69,
+        "max_anomaly_score": 0.1,
+        "dominant_context": "public_holiday_late_afternoon"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T17",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.83
+      }
+    },
+    {
+      "timestamp": "2025-01-01T18:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 18,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 18.6,
+        "apparent_temperature": 16,
+        "relative_humidity_2m": 68,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 23.8,
+        "weather_code": 2,
+        "weather_comfort_score": 0.68,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1880,
+          "direction_1_count": 950,
+          "direction_2_count": 930,
+          "baseline_count": 1780,
+          "activity_intensity": 0.72,
+          "baseline_deviation": 0.06,
+          "pulse_score": 0.68,
+          "anomaly_score": 0.09,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1520,
+          "direction_1_count": 760,
+          "direction_2_count": 760,
+          "baseline_count": 1550,
+          "activity_intensity": 0.65,
+          "baseline_deviation": -0.02,
+          "pulse_score": 0.62,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1360,
+          "direction_1_count": 710,
+          "direction_2_count": 650,
+          "baseline_count": 1400,
+          "activity_intensity": 0.62,
+          "baseline_deviation": -0.03,
+          "pulse_score": 0.59,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.8
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 4760,
+        "mean_pulse_score": 0.63,
+        "max_anomaly_score": 0.09,
+        "dominant_context": "windy_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T18",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.82
+      }
+    },
+    {
+      "timestamp": "2025-01-01T19:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 19,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 18,
+        "apparent_temperature": 15.6,
+        "relative_humidity_2m": 70,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 21.5,
+        "weather_code": 1,
+        "weather_comfort_score": 0.68,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1620,
+          "direction_1_count": 820,
+          "direction_2_count": 800,
+          "baseline_count": 1500,
+          "activity_intensity": 0.66,
+          "baseline_deviation": 0.08,
+          "pulse_score": 0.63,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1320,
+          "direction_1_count": 660,
+          "direction_2_count": 660,
+          "baseline_count": 1320,
+          "activity_intensity": 0.6,
+          "baseline_deviation": 0,
+          "pulse_score": 0.57,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 1180,
+          "direction_1_count": 620,
+          "direction_2_count": 560,
+          "baseline_count": 1220,
+          "activity_intensity": 0.57,
+          "baseline_deviation": -0.03,
+          "pulse_score": 0.54,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.8
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 4120,
+        "mean_pulse_score": 0.58,
+        "max_anomaly_score": 0.1,
+        "dominant_context": "public_holiday_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T19",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.82
+      }
+    },
+    {
+      "timestamp": "2025-01-01T20:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 20,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 17.1,
+        "apparent_temperature": 15,
+        "relative_humidity_2m": 73,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 19.4,
+        "weather_code": 2,
+        "weather_comfort_score": 0.7,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 1300,
+          "direction_1_count": 660,
+          "direction_2_count": 640,
+          "baseline_count": 1180,
+          "activity_intensity": 0.58,
+          "baseline_deviation": 0.1,
+          "pulse_score": 0.57,
+          "anomaly_score": 0.12,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 1060,
+          "direction_1_count": 520,
+          "direction_2_count": 540,
+          "baseline_count": 1040,
+          "activity_intensity": 0.52,
+          "baseline_deviation": 0.02,
+          "pulse_score": 0.51,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 940,
+          "direction_1_count": 500,
+          "direction_2_count": 440,
+          "baseline_count": 980,
+          "activity_intensity": 0.5,
+          "baseline_deviation": -0.04,
+          "pulse_score": 0.48,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.8
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 3300,
+        "mean_pulse_score": 0.52,
+        "max_anomaly_score": 0.12,
+        "dominant_context": "public_holiday_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T20",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.82
+      }
+    },
+    {
+      "timestamp": "2025-01-01T21:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 21,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.9,
+        "apparent_temperature": 14.6,
+        "relative_humidity_2m": 72,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 19,
+        "weather_code": 2,
+        "weather_comfort_score": 0.69,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 980,
+          "direction_1_count": 500,
+          "direction_2_count": 480,
+          "baseline_count": 900,
+          "activity_intensity": 0.5,
+          "baseline_deviation": 0.09,
+          "pulse_score": 0.49,
+          "anomaly_score": 0.1,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 820,
+          "direction_1_count": 410,
+          "direction_2_count": 410,
+          "baseline_count": 820,
+          "activity_intensity": 0.46,
+          "baseline_deviation": 0,
+          "pulse_score": 0.44,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 720,
+          "direction_1_count": 380,
+          "direction_2_count": 340,
+          "baseline_count": 760,
+          "activity_intensity": 0.43,
+          "baseline_deviation": -0.05,
+          "pulse_score": 0.41,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.8
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 2520,
+        "mean_pulse_score": 0.45,
+        "max_anomaly_score": 0.1,
+        "dominant_context": "public_holiday_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T21",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.82
+      }
+    },
+    {
+      "timestamp": "2025-01-01T22:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 22,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.5,
+        "apparent_temperature": 14.1,
+        "relative_humidity_2m": 72,
+        "precipitation": 0,
+        "rain": 0,
+        "wind_speed_10m": 19.3,
+        "weather_code": 1,
+        "weather_comfort_score": 0.68,
+        "weather_disruption_flag": false
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 720,
+          "direction_1_count": 360,
+          "direction_2_count": 360,
+          "baseline_count": 680,
+          "activity_intensity": 0.42,
+          "baseline_deviation": 0.06,
+          "pulse_score": 0.41,
+          "anomaly_score": 0.08,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.84
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 610,
+          "direction_1_count": 300,
+          "direction_2_count": 310,
+          "baseline_count": 620,
+          "activity_intensity": 0.39,
+          "baseline_deviation": -0.02,
+          "pulse_score": 0.37,
+          "anomaly_score": 0.04,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": null,
+          "direction_1_count": null,
+          "direction_2_count": null,
+          "baseline_count": 580,
+          "activity_intensity": null,
+          "baseline_deviation": null,
+          "pulse_score": 0.35,
+          "anomaly_score": null,
+          "is_missing": true,
+          "missing_reason": "source_hour_absent",
+          "quality": {
+            "observed_data_available": false,
+            "confidence_score": 0.25
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 1330,
+        "mean_pulse_score": 0.38,
+        "max_anomaly_score": 0.08,
+        "dominant_context": "public_holiday_late_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T22",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 2,
+        "missing_sensor_count": 1,
+        "confidence_score": 0.64
+      }
+    },
+    {
+      "timestamp": "2025-01-01T23:00:00+11:00",
+      "date": "2025-01-01",
+      "hour": 23,
+      "calendar": {
+        "is_weekend": false,
+        "is_public_holiday": true,
+        "season": "summer"
+      },
+      "weather": {
+        "temperature_2m": 16.1,
+        "apparent_temperature": 13.7,
+        "relative_humidity_2m": 70,
+        "precipitation": 0.2,
+        "rain": 0.2,
+        "wind_speed_10m": 18,
+        "weather_code": 51,
+        "weather_comfort_score": 0.58,
+        "weather_disruption_flag": true
+      },
+      "sensor_readings": [
+        {
+          "sensor_id": "4",
+          "observed_count": 520,
+          "direction_1_count": 260,
+          "direction_2_count": 260,
+          "baseline_count": 520,
+          "activity_intensity": 0.35,
+          "baseline_deviation": 0,
+          "pulse_score": 0.32,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.82
+          }
+        },
+        {
+          "sensor_id": "3",
+          "observed_count": 450,
+          "direction_1_count": 220,
+          "direction_2_count": 230,
+          "baseline_count": 490,
+          "activity_intensity": 0.33,
+          "baseline_deviation": -0.08,
+          "pulse_score": 0.3,
+          "anomaly_score": 0.05,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.8
+          }
+        },
+        {
+          "sensor_id": "133",
+          "observed_count": 390,
+          "direction_1_count": 210,
+          "direction_2_count": 180,
+          "baseline_count": 440,
+          "activity_intensity": 0.3,
+          "baseline_deviation": -0.11,
+          "pulse_score": 0.28,
+          "anomaly_score": 0.06,
+          "is_missing": false,
+          "quality": {
+            "observed_data_available": true,
+            "confidence_score": 0.78
+          }
+        }
+      ],
+      "city_summary": {
+        "total_observed_count": 1360,
+        "mean_pulse_score": 0.3,
+        "max_anomaly_score": 0.06,
+        "dominant_context": "light_rain_late_evening"
+      },
+      "pulse_field_frame": {
+        "frame_id": "2025-01-01T23",
+        "render_mode": "sensor_spikes",
+        "confidence_surface_available": false
+      },
+      "record_quality": {
+        "complete_sensor_count": 3,
+        "missing_sensor_count": 0,
+        "confidence_score": 0.8
+      }
+    }
+  ],
+  "explanation_cards": [
+    {
+      "card_id": "example-card-001",
+      "timestamp": "2025-01-01T00:00:00+11:00",
+      "sensor_id": "4",
+      "severity": "medium",
+      "title": "Elevated activity near Town Hall after midnight",
+      "summary": "The mock pulse score is high relative to the placeholder baseline. This is likely related to New Year's Day activity, but the explanation is not manually verified.",
+      "evidence": [
+        {
+          "field": "pulse_score",
+          "value": 0.92,
+          "origin": "derived_placeholder"
+        },
+        {
+          "field": "is_public_holiday",
+          "value": true,
+          "origin": "calendar_context"
+        }
+      ],
+      "possible_causes": [
+        {
+          "label": "New Year's Day / overnight city activity",
+          "origin": "manual_annotation_placeholder",
+          "confidence": 0.45
+        }
+      ],
+      "annotation_status": "placeholder_not_verified",
+      "confidence": {
+        "score": 0.45,
+        "reason": "No manually curated event record linked yet."
+      }
+    },
+    {
+      "card_id": "example-card-002",
+      "timestamp": "2025-01-01T23:00:00+11:00",
+      "sensor_id": null,
+      "severity": "low",
+      "title": "Light rain context at the end of the day",
+      "summary": "Weather disruption flag is enabled because the mock hour includes light rain. This may help explain softer late-evening activity.",
+      "evidence": [
+        {
+          "field": "rain",
+          "value": 0.2,
+          "origin": "weather_context"
+        },
+        {
+          "field": "weather_disruption_flag",
+          "value": true,
+          "origin": "derived_indicator"
+        }
+      ],
+      "possible_causes": [
+        {
+          "label": "Light rain and wind may reduce late-night pedestrian comfort",
+          "origin": "derived_context_placeholder",
+          "confidence": 0.5
+        }
+      ],
+      "annotation_status": "placeholder_not_verified",
+      "confidence": {
+        "score": 0.5,
+        "reason": "Weather fields are observed context; behavioural interpretation is not validated."
+      }
+    }
+  ],
+  "pulse_field": {
+    "field_type": "sensor_based_2_5d_pulse_field",
+    "coordinate_mode": "lat_lon_projected_to_local_view",
+    "rendering_strategy": "spikes_and_ripples",
+    "interpolated_surface_enabled": false,
+    "legend": {
+      "height": "pulse_score",
+      "ripple_radius": "observed_count",
+      "color": "anomaly_score",
+      "opacity": "confidence_score"
+    },
+    "frames": [
+      {
+        "timestamp": "2025-01-01T00:00:00+11:00",
+        "points": [
+          {
+            "sensor_id": "4",
+            "height": 0.92,
+            "ripple_radius": 0.88,
+            "color_value": 0.68,
+            "confidence_score": 0.86,
+            "infrastructure_pressure_proxy": 0.7,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "3",
+            "height": 0.84,
+            "ripple_radius": 0.8,
+            "color_value": 0.55,
+            "confidence_score": 0.84,
+            "infrastructure_pressure_proxy": 0.62,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "133",
+            "height": 0.66,
+            "ripple_radius": 0.64,
+            "color_value": 0.38,
+            "confidence_score": 0.82,
+            "infrastructure_pressure_proxy": 0.48,
+            "edge_density_estimate": null
+          }
+        ]
+      },
+      {
+        "timestamp": "2025-01-01T12:00:00+11:00",
+        "points": [
+          {
+            "sensor_id": "4",
+            "height": 0.93,
+            "ripple_radius": 0.93,
+            "color_value": 0.32,
+            "confidence_score": 0.85,
+            "infrastructure_pressure_proxy": 0.74,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "3",
+            "height": 0.84,
+            "ripple_radius": 0.84,
+            "color_value": 0.24,
+            "confidence_score": 0.83,
+            "infrastructure_pressure_proxy": 0.65,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "133",
+            "height": 0.75,
+            "ripple_radius": 0.75,
+            "color_value": 0.14,
+            "confidence_score": 0.81,
+            "infrastructure_pressure_proxy": 0.55,
+            "edge_density_estimate": null
+          }
+        ]
+      },
+      {
+        "timestamp": "2025-01-01T22:00:00+11:00",
+        "points": [
+          {
+            "sensor_id": "4",
+            "height": 0.41,
+            "ripple_radius": 0.42,
+            "color_value": 0.08,
+            "confidence_score": 0.84,
+            "infrastructure_pressure_proxy": 0.25,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "3",
+            "height": 0.37,
+            "ripple_radius": 0.39,
+            "color_value": 0.04,
+            "confidence_score": 0.82,
+            "infrastructure_pressure_proxy": 0.22,
+            "edge_density_estimate": null
+          },
+          {
+            "sensor_id": "133",
+            "height": 0.35,
+            "ripple_radius": null,
+            "color_value": null,
+            "confidence_score": 0.25,
+            "infrastructure_pressure_proxy": null,
+            "edge_density_estimate": null,
+            "is_missing": true
+          }
+        ]
+      }
+    ],
+    "uncertainty_model": {
+      "sensor_observation_confidence": "Based on source availability and sensor metadata.",
+      "interpolation_confidence": "Not applicable in MVP mock.",
+      "manual_explanation_confidence": "Low until manually verified."
+    }
+  },
+  "quality_notes": [
+    "This example is a schema mock only; values are illustrative placeholders.",
+    "The real processed dataset should filter raw pedestrian counts to 2025.",
+    "Missing observed pedestrian hours should remain explicit null values.",
+    "Open-Meteo JSON should be the preferred automated weather source.",
+    "Planned works should remain auxiliary until a 2025-aligned disruption source is available.",
+    "Future edge-signal fields are placeholders and should not be presented as implemented inference."
+  ]
+}

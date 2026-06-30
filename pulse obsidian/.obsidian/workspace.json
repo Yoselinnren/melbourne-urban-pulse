@@ -55,8 +55,23 @@
               "icon": "lucide-file",
               "title": "Melbourne Urban Pulse 项目设想与实施方案"
             }
+          },
+          {
+            "id": "f338ecffd3d7e918",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "process.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "process"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -218,10 +233,11 @@
       "bases:新建数据库": false
     }
   },
-  "active": "e815b767f86b4210",
+  "active": "f338ecffd3d7e918",
   "lastOpenFiles": [
-    "Melbourne Urban Pulse — Project Vision and Implementation Plan.md",
     "Melbourne Urban Pulse 项目设想与实施方案.md",
+    "process.md",
+    "Melbourne Urban Pulse — Project Vision and Implementation Plan.md",
     "未命名"
   ]
 }
