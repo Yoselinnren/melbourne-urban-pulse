@@ -1,0 +1,950 @@
+{
+  "overview": {
+    "generated_at": "2026-06-30T20:45:35",
+    "discovered_file_count": 7,
+    "parsed_file_count": 6,
+    "unparsed_file_count": 1,
+    "successfully_profiled_source_groups": [
+      "calendar",
+      "events",
+      "pedestrian_counts",
+      "pedestrian_sensor_locations",
+      "weather"
+    ],
+    "unparsed_files": [
+      {
+        "path": "data/raw/events/melbourne_events_calendar_2025.pdf",
+        "format": "pdf",
+        "parsed": false,
+        "reason": "Unsupported for lightweight profiling in this script.",
+        "size_bytes": 690098
+      }
+    ],
+    "recommended_mvp_study_period": {
+      "period": "2025-01-01 to 2025-12-31",
+      "reason": "Weather data covers 2025 hourly, calendar data includes 2025 context, and pedestrian counts include 2025 observations across active sensors."
+    },
+    "candidate_pedestrian_sensors": [
+      {
+        "sensor_id": "4",
+        "sensor_name": "Swa123_T",
+        "description": "Town Hall (West)",
+        "status": "A",
+        "latitude": "-37.81487988",
+        "longitude": "144.9660878",
+        "rows_2025": 8759,
+        "total_count_2025": 13586917
+      },
+      {
+        "sensor_id": "66",
+        "sensor_name": "QVN_T",
+        "description": "QV2 Apartments, 300 Swanston Street",
+        "status": "A",
+        "latitude": "-37.81057846",
+        "longitude": "144.96444294",
+        "rows_2025": 8759,
+        "total_count_2025": 10526946
+      },
+      {
+        "sensor_id": "3",
+        "sensor_name": "Swa295_T",
+        "description": "Melbourne Central",
+        "status": "A",
+        "latitude": "-37.81101524",
+        "longitude": "144.96429485",
+        "rows_2025": 8759,
+        "total_count_2025": 9515455
+      },
+      {
+        "sensor_id": "47",
+        "sensor_name": "Eli250_T",
+        "description": "Melbourne Central-Elizabeth St (East)",
+        "status": "A",
+        "latitude": "-37.81258467",
+        "longitude": "144.9625775",
+        "rows_2025": 8759,
+        "total_count_2025": 7971626
+      },
+      {
+        "sensor_id": "209",
+        "sensor_name": "FliS_T",
+        "description": "Flinders Underpass - Walkway",
+        "status": "A",
+        "latitude": "-37.81909037",
+        "longitude": "144.96549709",
+        "rows_2025": 8759,
+        "total_count_2025": 6375159
+      },
+      {
+        "sensor_id": "59",
+        "sensor_name": "RMIT_T",
+        "description": "Building 80 RMIT",
+        "status": "A",
+        "latitude": "-37.80825648",
+        "longitude": "144.96304859",
+        "rows_2025": 8759,
+        "total_count_2025": 6111033
+      },
+      {
+        "sensor_id": "133",
+        "sensor_name": "Spen229_T",
+        "description": "I-Hub Southern Cross Station - Lonsdale Street Entrance - South",
+        "status": "A",
+        "latitude": "-37.81531435",
+        "longitude": "144.95227769",
+        "rows_2025": 8759,
+        "total_count_2025": 5571993
+      },
+      {
+        "sensor_id": "79",
+        "sensor_name": "FliSS_T",
+        "description": "Flinders St (South)",
+        "status": "A",
+        "latitude": "-37.81794046",
+        "longitude": "144.96616678",
+        "rows_2025": 8759,
+        "total_count_2025": 4823050
+      },
+      {
+        "sensor_id": "134",
+        "sensor_name": "Spen201_T",
+        "description": "I-Hub Southern Cross Station - Bourke Street Entrance - North",
+        "status": "A",
+        "latitude": "-37.81694221",
+        "longitude": "144.95303935",
+        "rows_2025": 8759,
+        "total_count_2025": 4465504
+      },
+      {
+        "sensor_id": "30",
+        "sensor_name": "Lon189_T",
+        "description": "Lonsdale St (South)",
+        "status": "A",
+        "latitude": "-37.8112185",
+        "longitude": "144.96656806",
+        "rows_2025": 8759,
+        "total_count_2025": 3684457
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "data/raw/calendar/victoria_important_dates_2025.csv",
+      "format": "csv",
+      "parsed": true,
+      "row_count": 2879,
+      "columns": [
+        "arun",
+        "dateType",
+        "name",
+        "important_date",
+        "publisher",
+        "description",
+        "source"
+      ],
+      "column_count": 7,
+      "sample_values": {
+        "arun": [
+          "4430ad5c-47a1-4342-a2ac-8078e6a5d131",
+          "d1a65c80-49fd-4652-8def-3cbe092b09ae",
+          "7bbee0c8-6fd2-4037-a384-9910e3dc129f"
+        ],
+        "dateType": [
+          "MULTI_FAITH",
+          "MULTI_FAITH",
+          "MULTI_FAITH"
+        ],
+        "name": [
+          "Lent",
+          "Lent",
+          "Lent"
+        ],
+        "important_date": [
+          "6/03/2019",
+          "16/03/2019",
+          "17/03/2019"
+        ],
+        "publisher": [
+          "Faith Communities Council of Victoria",
+          "Faith Communities Council of Victoria",
+          "Faith Communities Council of Victoria"
+        ],
+        "description": [
+          "6 March 2019 - 18 April 2019",
+          "6 March 2019 - 18 April 2019",
+          "6 March 2019 - 18 April 2019"
+        ],
+        "source": [
+          "http://www.faithvictoria.org.au/calendar",
+          "http://www.faithvictoria.org.au/calendar",
+          "http://www.faithvictoria.org.au/calendar"
+        ]
+      },
+      "missing_values": {
+        "description": 1192,
+        "source": 56,
+        "arun": 1754
+      },
+      "missing_percent": {
+        "arun": 60.924,
+        "description": 41.403,
+        "source": 1.945
+      },
+      "inferred_columns": {
+        "date_time_columns": [
+          "dateType",
+          "important_date"
+        ],
+        "id_columns": [],
+        "count_columns": [],
+        "location_columns": [],
+        "category_columns": [
+          "dateType",
+          "name"
+        ]
+      },
+      "date_ranges": {
+        "dateType": {
+          "min": null,
+          "max": null
+        },
+        "important_date": {
+          "min": "2018-10-07T00:00",
+          "max": "2030-12-20T00:00"
+        }
+      },
+      "numeric_ranges": {},
+      "unique_counts": {},
+      "top_categories": {
+        "dateType": [
+          {
+            "value": "MULTI_FAITH",
+            "count": 2247
+          },
+          {
+            "value": "PARLIAMENT_SITTING",
+            "count": 333
+          },
+          {
+            "value": "PUBLIC_HOLIDAY",
+            "count": 128
+          },
+          {
+            "value": "SCHOOL_TERM",
+            "count": 102
+          },
+          {
+            "value": "SCHOOL_HOLIDAY",
+            "count": 55
+          },
+          {
+            "value": "DAYLIGHT_SAVING",
+            "count": 14
+          }
+        ],
+        "name": [
+          {
+            "value": "Both Houses sitting",
+            "count": 317
+          },
+          {
+            "value": "Great Lent (Orthodox)",
+            "count": 287
+          },
+          {
+            "value": "Ramadan",
+            "count": 268
+          },
+          {
+            "value": "Advent",
+            "count": 202
+          },
+          {
+            "value": "Lent",
+            "count": 132
+          },
+          {
+            "value": "Lent begins",
+            "count": 132
+          },
+          {
+            "value": "Ridvan",
+            "count": 96
+          },
+          {
+            "value": "Lent begins on Ash Wednesday",
+            "count": 88
+          },
+          {
+            "value": "Navaratri",
+            "count": 75
+          },
+          {
+            "value": "Pesach",
+            "count": 64
+          },
+          {
+            "value": "Hanukkah",
+            "count": 64
+          },
+          {
+            "value": "Holy Week",
+            "count": 57
+          }
+        ]
+      }
+    },
+    {
+      "path": "data/raw/events/city_activities_planned_works_datavic.json",
+      "format": "json",
+      "parsed": true,
+      "source_type": "planned_works_datavic",
+      "success": true,
+      "reported_total": 605,
+      "record_count": 605,
+      "fields": [
+        "_id",
+        "activity_id",
+        "classification",
+        "end_date",
+        "location",
+        "notes",
+        "source_id",
+        "start_date",
+        "status",
+        "small_area",
+        "geo_point_2d",
+        "json_geometry_geometry"
+      ],
+      "date_ranges": {
+        "start_date": {
+          "min": "2015-10-11T00:00",
+          "max": "2023-05-01T00:00"
+        },
+        "end_date": {
+          "min": "2022-05-12T00:00",
+          "max": "2921-11-19T00:00"
+        }
+      },
+      "classifications": [
+        {
+          "value": "Structures",
+          "count": 415
+        },
+        {
+          "value": "Traffic Management",
+          "count": 85
+        },
+        {
+          "value": "Reserved Parking",
+          "count": 69
+        },
+        {
+          "value": "Event",
+          "count": 21
+        },
+        {
+          "value": "Public Event",
+          "count": 14
+        },
+        {
+          "value": "Private Event",
+          "count": 1
+        }
+      ],
+      "statuses": [
+        {
+          "value": "CONFIRMED",
+          "count": 378
+        },
+        {
+          "value": "Confirmed",
+          "count": 118
+        },
+        {
+          "value": "PROPOSED",
+          "count": 74
+        },
+        {
+          "value": "PROVISIONAL",
+          "count": 14
+        },
+        {
+          "value": "WARNING",
+          "count": 12
+        },
+        {
+          "value": "REINSTATEMENT",
+          "count": 7
+        },
+        {
+          "value": "PROVISIONAL MULTIPLE",
+          "count": 2
+        }
+      ],
+      "small_areas": [
+        {
+          "value": "Melbourne (CBD)",
+          "count": 312
+        },
+        {
+          "value": "North Melbourne",
+          "count": 53
+        },
+        {
+          "value": "West Melbourne (Residential)",
+          "count": 46
+        },
+        {
+          "value": "Carlton",
+          "count": 44
+        },
+        {
+          "value": "East Melbourne",
+          "count": 39
+        },
+        {
+          "value": "Southbank",
+          "count": 23
+        },
+        {
+          "value": "Kensington",
+          "count": 21
+        },
+        {
+          "value": "South Yarra",
+          "count": 17
+        },
+        {
+          "value": "Docklands",
+          "count": 16
+        },
+        {
+          "value": "Melbourne (Remainder)",
+          "count": 16
+        },
+        {
+          "value": "Parkville",
+          "count": 10
+        },
+        {
+          "value": "West Melbourne (Industrial)",
+          "count": 6
+        }
+      ],
+      "location_fields": [
+        "location",
+        "small_area",
+        "geo_point_2d",
+        "json_geometry_geometry"
+      ],
+      "missing_values": {
+        "location": 2,
+        "notes": 105
+      }
+    },
+    {
+      "path": "data/raw/events/melbourne_events_calendar_2025.pdf",
+      "format": "pdf",
+      "parsed": false,
+      "reason": "Unsupported for lightweight profiling in this script.",
+      "size_bytes": 690098
+    },
+    {
+      "path": "data/raw/pedestrian/pedestrian_counts_hourly_full.csv",
+      "format": "csv",
+      "parsed": true,
+      "row_count": 1607116,
+      "columns": [
+        "id",
+        "location_id",
+        "sensing_date",
+        "hourday",
+        "direction_1",
+        "direction_2",
+        "pedestriancount",
+        "sensor_name",
+        "location"
+      ],
+      "column_count": 9,
+      "sample_values": {
+        "id": [
+          "1331920251121",
+          "87420241209",
+          "61620260624"
+        ],
+        "location_id": [
+          "133",
+          "87",
+          "61"
+        ],
+        "sensing_date": [
+          "2025-11-21",
+          "2024-12-09",
+          "2026-06-24"
+        ],
+        "hourday": [
+          "19",
+          "4",
+          "6"
+        ],
+        "direction_1": [
+          "518",
+          "3",
+          "23"
+        ],
+        "direction_2": [
+          "429",
+          "3",
+          "37"
+        ],
+        "pedestriancount": [
+          "947",
+          "6",
+          "60"
+        ],
+        "sensor_name": [
+          "Spen229_T",
+          "Errol23_T",
+          "RMIT14_T"
+        ],
+        "location": [
+          "-37.81531435, 144.95227769",
+          "-37.80454949, 144.94921863",
+          "-37.80767455, 144.96309114"
+        ]
+      },
+      "missing_values": {},
+      "missing_percent": {},
+      "inferred_columns": {
+        "date_time_columns": [
+          "sensing_date"
+        ],
+        "id_columns": [
+          "id",
+          "location_id",
+          "sensor_name"
+        ],
+        "count_columns": [
+          "pedestriancount"
+        ],
+        "location_columns": [
+          "location_id",
+          "location"
+        ],
+        "category_columns": [
+          "sensor_name"
+        ]
+      },
+      "date_ranges": {
+        "sensing_date": {
+          "min": "2024-06-29T00:00",
+          "max": "2026-06-28T00:00"
+        },
+        "sensing_date + hourday": {
+          "min": "2024-06-29T00:00",
+          "max": "2026-06-28T03:00"
+        }
+      },
+      "numeric_ranges": {
+        "pedestriancount": {
+          "min": 0.0,
+          "max": 11113.0
+        },
+        "hourday": {
+          "min": 0.0,
+          "max": 23.0
+        }
+      },
+      "unique_counts": {
+        "id": 5001,
+        "location_id": 102,
+        "sensor_name": 97
+      },
+      "top_categories": {
+        "sensor_name": [
+          {
+            "value": "SouthB_T",
+            "count": 34892
+          },
+          {
+            "value": "FliS_T",
+            "count": 34872
+          },
+          {
+            "value": "Lat526_T",
+            "count": 32135
+          },
+          {
+            "value": "WatCit_T",
+            "count": 31903
+          },
+          {
+            "value": "BirBridge_T",
+            "count": 17915
+          },
+          {
+            "value": "Swa295_T",
+            "count": 17498
+          },
+          {
+            "value": "King335_T",
+            "count": 17495
+          },
+          {
+            "value": "261Will_T",
+            "count": 17493
+          },
+          {
+            "value": "Col623_T",
+            "count": 17493
+          },
+          {
+            "value": "Spen161_T",
+            "count": 17492
+          },
+          {
+            "value": "Lon189_T",
+            "count": 17492
+          },
+          {
+            "value": "RMIT14_T",
+            "count": 17490
+          }
+        ]
+      }
+    },
+    {
+      "path": "data/raw/sensors/pedestrian_sensor_locations.csv",
+      "format": "csv",
+      "parsed": true,
+      "row_count": 136,
+      "columns": [
+        "Location_ID",
+        "Sensor_Description",
+        "Sensor_Name",
+        "Installation_Date",
+        "Note",
+        "Location_Type",
+        "Status",
+        "Direction_1",
+        "Direction_2",
+        "Latitude",
+        "Longitude",
+        "Location"
+      ],
+      "column_count": 12,
+      "sample_values": {
+        "Location_ID": [
+          "5",
+          "9",
+          "12"
+        ],
+        "Sensor_Description": [
+          "Princes Bridge",
+          "Southern Cross Station",
+          "New Quay"
+        ],
+        "Sensor_Name": [
+          "PriNW_T",
+          "Col700_T",
+          "NewQ_T"
+        ],
+        "Installation_Date": [
+          "2009-03-26",
+          "2009-03-23",
+          "2009-01-21"
+        ],
+        "Note": [
+          "Replace with: 00:6e:02:01:9e:54",
+          "Sensor relocated to sensor ID 25 on 2/10/2019",
+          "Pushbox Upgrade, 30/06/2023"
+        ],
+        "Location_Type": [
+          "Outdoor",
+          "Outdoor",
+          "Outdoor"
+        ],
+        "Status": [
+          "A",
+          "A",
+          "A"
+        ],
+        "Direction_1": [
+          "North",
+          "East",
+          "East"
+        ],
+        "Direction_2": [
+          "South",
+          "West",
+          "West"
+        ],
+        "Latitude": [
+          "-37.81874249",
+          "-37.81982992",
+          "-37.81457988"
+        ],
+        "Longitude": [
+          "144.96787656",
+          "144.95102555",
+          "144.94292398"
+        ],
+        "Location": [
+          "-37.81874249, 144.96787656",
+          "-37.81982992, 144.95102555",
+          "-37.81457988, 144.94292398"
+        ]
+      },
+      "missing_values": {
+        "Note": 97,
+        "Direction_1": 31,
+        "Direction_2": 31,
+        "Installation_Date": 1
+      },
+      "missing_percent": {
+        "Installation_Date": 0.735,
+        "Note": 71.324,
+        "Direction_1": 22.794,
+        "Direction_2": 22.794
+      },
+      "inferred_columns": {
+        "date_time_columns": [
+          "Installation_Date"
+        ],
+        "id_columns": [
+          "Location_ID",
+          "Sensor_Description",
+          "Sensor_Name"
+        ],
+        "count_columns": [],
+        "location_columns": [
+          "Location_ID",
+          "Installation_Date",
+          "Location_Type",
+          "Latitude",
+          "Longitude",
+          "Location"
+        ],
+        "category_columns": [
+          "Sensor_Name",
+          "Location_Type",
+          "Status"
+        ]
+      },
+      "date_ranges": {
+        "Installation_Date": {
+          "min": "2009-01-20T00:00",
+          "max": "2025-10-18T00:00"
+        }
+      },
+      "numeric_ranges": {
+        "Latitude": {
+          "min": -37.82590962,
+          "max": -37.7893527
+        },
+        "Longitude": {
+          "min": 144.9286055,
+          "max": 144.98638807
+        }
+      },
+      "unique_counts": {
+        "Location_ID": 136,
+        "Sensor_Description": 135,
+        "Sensor_Name": 131
+      },
+      "top_categories": {
+        "Sensor_Name": [
+          {
+            "value": "BirBridge_T",
+            "count": 2
+          },
+          {
+            "value": "WatCit_T",
+            "count": 2
+          },
+          {
+            "value": "FliS_T",
+            "count": 2
+          },
+          {
+            "value": "Lat526_T",
+            "count": 2
+          },
+          {
+            "value": "SouthB_T",
+            "count": 2
+          },
+          {
+            "value": "PriNW_T",
+            "count": 1
+          },
+          {
+            "value": "Col700_T",
+            "count": 1
+          },
+          {
+            "value": "NewQ_T",
+            "count": 1
+          },
+          {
+            "value": "SanBri_T",
+            "count": 1
+          },
+          {
+            "value": "Col12_T",
+            "count": 1
+          },
+          {
+            "value": "Swa31",
+            "count": 1
+          },
+          {
+            "value": "UM3_T",
+            "count": 1
+          }
+        ],
+        "Location_Type": [
+          {
+            "value": "Outdoor",
+            "count": 102
+          },
+          {
+            "value": "Indoor",
+            "count": 34
+          }
+        ],
+        "Status": [
+          {
+            "value": "A",
+            "count": 136
+          }
+        ]
+      }
+    },
+    {
+      "path": "data/raw/weather/open_meteo_melbourne_hourly_2025.csv",
+      "format": "csv",
+      "parsed": true,
+      "row_count": 8760,
+      "columns": [
+        "time",
+        "temperature_2m (°C)",
+        "relative_humidity_2m (%)",
+        "apparent_temperature (°C)",
+        "precipitation (mm)",
+        "rain (mm)",
+        "wind_speed_10m (km/h)",
+        "weather_code (wmo code)"
+      ],
+      "column_count": 8,
+      "sample_values": {
+        "time": [
+          "2025-01-01T00:00",
+          "2025-01-01T01:00",
+          "2025-01-01T02:00"
+        ],
+        "temperature_2m (°C)": [
+          "16.6",
+          "16.2",
+          "15.8"
+        ],
+        "relative_humidity_2m (%)": [
+          "76",
+          "80",
+          "83"
+        ],
+        "apparent_temperature (°C)": [
+          "16.7",
+          "16.6",
+          "16.2"
+        ],
+        "precipitation (mm)": [
+          "0.00",
+          "0.00",
+          "0.00"
+        ],
+        "rain (mm)": [
+          "0.00",
+          "0.00",
+          "0.00"
+        ],
+        "wind_speed_10m (km/h)": [
+          "4.9",
+          "3.6",
+          "3.2"
+        ],
+        "weather_code (wmo code)": [
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      "missing_values": {},
+      "missing_percent": {},
+      "inferred_columns": {
+        "date_time_columns": [
+          "time"
+        ],
+        "id_columns": [],
+        "count_columns": [],
+        "location_columns": [
+          "relative_humidity_2m (%)"
+        ],
+        "category_columns": []
+      },
+      "date_ranges": {
+        "time": {
+          "min": "2025-01-01T00:00",
+          "max": "2025-12-31T23:00"
+        }
+      },
+      "numeric_ranges": {},
+      "unique_counts": {},
+      "top_categories": {}
+    },
+    {
+      "path": "data/raw/weather/open_meteo_melbourne_hourly_2025.json",
+      "format": "json",
+      "parsed": true,
+      "source_type": "open_meteo_hourly",
+      "timezone": "Australia/Melbourne",
+      "timezone_abbreviation": "GMT+10",
+      "utc_offset_seconds": 36000,
+      "latitude": -37.785587,
+      "longitude": 144.93976,
+      "hourly_count": 8760,
+      "first_timestamp": "2025-01-01T00:00",
+      "last_timestamp": "2025-12-31T23:00",
+      "variables": [
+        "temperature_2m",
+        "relative_humidity_2m",
+        "apparent_temperature",
+        "precipitation",
+        "rain",
+        "wind_speed_10m",
+        "weather_code"
+      ],
+      "hourly_units": {
+        "time": "iso8601",
+        "temperature_2m": "°C",
+        "relative_humidity_2m": "%",
+        "apparent_temperature": "°C",
+        "precipitation": "mm",
+        "rain": "mm",
+        "wind_speed_10m": "km/h",
+        "weather_code": "wmo code"
+      },
+      "series_lengths": {
+        "time": 8760,
+        "temperature_2m": 8760,
+        "relative_humidity_2m": 8760,
+        "apparent_temperature": 8760,
+        "precipitation": 8760,
+        "rain": 8760,
+        "wind_speed_10m": 8760,
+        "weather_code": 8760
+      }
+    }
+  ]
+}
