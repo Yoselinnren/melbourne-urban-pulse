@@ -1,7 +1,7 @@
-import exampleDashboardData from "../../public/dashboard-data/example_dashboard_data.json";
+import compactDashboardData from "../../public/dashboard-data/mvp_dashboard_compact.json";
 import type { DashboardData, HourlyRecord, Sensor } from "./types";
 
-export const dashboardData = exampleDashboardData as DashboardData;
+export const dashboardData = compactDashboardData as DashboardData;
 
 export function getSensorById(sensorId: string): Sensor | undefined {
   return dashboardData.sensors.find((sensor) => sensor.sensor_id === sensorId);

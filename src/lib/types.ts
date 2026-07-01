@@ -27,6 +27,25 @@ export type DashboardMetadata = {
   is_mock: boolean;
   timezone: string;
   spatial_reference: string;
+  data_window?: {
+    start: string;
+    end: string;
+    display_label: string;
+    purpose: string;
+  };
+  full_dataset_summary?: {
+    status: string;
+    hourly_records: number;
+    sensor_readings: number;
+    explicit_missing_sensor_readings: number;
+    calendar_days: number;
+    pulse_field_frames: number;
+    sensor_coverage: Array<{
+      sensor_id: string;
+      available_hourly_records: number;
+      missing_hourly_records: number;
+    }>;
+  };
 };
 
 export type DashboardProvenance = {

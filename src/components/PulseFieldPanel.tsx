@@ -67,9 +67,10 @@ export function PulseFieldPanel({ pulseField }: PulseFieldPanelProps) {
         </div>
       </div>
       <p className="mt-3 text-sm leading-6 text-slate-600">
-        This is a CSS placeholder using mock `pulse_field` frames. It encodes
-        spike height as pulse score, ripple size as activity, and opacity as
-        confidence. No WebGL or spatial interpolation is implemented yet.
+        This is a CSS placeholder using provisional `pulse_field` frames. It
+        encodes spike height as pulse score, ripple size as activity, and
+        opacity as confidence. No WebGL or spatial interpolation is implemented
+        yet.
       </p>
     </div>
   );

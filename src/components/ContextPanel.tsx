@@ -6,19 +6,19 @@ export function ContextPanel() {
 
   const items = [
     {
-      label: "Peak mock hour",
+      label: "Peak observed hour",
       value: `${String(peak.hour).padStart(2, "0")}:00`,
       detail: peak.city_summary.dominant_context.replaceAll("_", " "),
     },
     {
-      label: "Latest weather",
+      label: "Latest-hour weather",
       value: `${latest.weather.temperature_2m}°C`,
       detail: latest.weather.weather_disruption_flag
         ? "weather disruption flag on"
         : "no weather disruption flag",
     },
     {
-      label: "Calendar context",
+      label: "Latest-hour calendar",
       value: latest.calendar.is_public_holiday ? "Public holiday" : "Regular day",
       detail: `${latest.calendar.season} / ${
         latest.calendar.is_weekend ? "weekend" : "weekday"

@@ -41,7 +41,9 @@ export default function Home() {
             ["MVP sensors", `${dashboardData.sensors.length} locations`],
             [
               "Current data",
-              dashboardData.metadata.is_mock ? "Mock vertical slice" : "Processed data",
+              dashboardData.metadata.is_mock
+                ? "Example dataset"
+                : "Compact real-data subset",
             ],
           ].map(([label, value]) => (
             <div

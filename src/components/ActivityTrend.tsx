@@ -31,7 +31,7 @@ export function ActivityTrend({ records }: ActivityTrendProps) {
         <svg
           viewBox={`0 0 ${width} ${height}`}
           role="img"
-          aria-label="Mock 24-hour activity trend"
+          aria-label="7-day compact hourly activity trend"
           className="h-72 w-full"
         >
           <defs>
@@ -102,9 +102,9 @@ export function ActivityTrend({ records }: ActivityTrendProps) {
         </svg>
       </div>
       <p className="mt-3 text-sm leading-6 text-slate-600">
-        Mock total observed pedestrian activity across the selected MVP sensors.
-        Missing sensor observations remain explicit in the per-hour data and
-        are not treated as observed zero activity.
+        Observed pedestrian activity across the selected MVP sensors in this
+        compact real-data subset. Missing sensor observations remain explicit
+        in the per-hour data and are not treated as observed zero activity.
       </p>
     </div>
   );

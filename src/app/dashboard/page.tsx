@@ -69,15 +69,18 @@ export default function DashboardPage() {
           </SectionCard>
 
           <div className="grid gap-6 lg:grid-cols-[1.35fr_0.85fr]">
-            <SectionCard eyebrow="Activity" title="24-hour mock activity trend">
+            <SectionCard
+              eyebrow="Activity"
+              title="7-day compact hourly activity trend"
+            >
               <ActivityTrend records={dashboardData.hourly_records} />
             </SectionCard>
             <SectionCard eyebrow="Context" title="Weather and calendar">
               <ContextPanel />
               <div className="mt-4 rounded-2xl bg-cyan-50 p-4 text-sm leading-6 text-slate-700">
-                Weather fields come from the mock Open-Meteo-shaped context.
-                Calendar flags show New Year&apos;s Day as a public holiday in
-                the example slice.
+                Weather fields use Open-Meteo weather context. Calendar flags
+                show New Year&apos;s Day as a public holiday in this compact
+                real-data subset; the full annual dashboard is not loaded here.
               </div>
             </SectionCard>
           </div>
