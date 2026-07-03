@@ -7,6 +7,7 @@ extract anomalies, or build dashboard summaries.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import math
@@ -15,14 +16,12 @@ from pathlib import Path
 from statistics import fmean, median
 from typing import Any
 
-
-ROOT = Path(__file__).resolve().parents[1]
-INPUT_FILE = ROOT / "data" / "processed" / "context_classified_panel.csv"
-PHASE1A_DIAGNOSTICS = ROOT / "data" / "processed" / "phase1a_diagnostics.json"
-OUTPUT_DIR = ROOT / "data" / "processed"
-CSV_OUTPUT = OUTPUT_DIR / "regular_baselines.csv"
-JSON_OUTPUT = OUTPUT_DIR / "regular_baselines.json"
-DIAGNOSTICS_OUTPUT = OUTPUT_DIR / "phase1b_diagnostics.json"
+from analysis_config import (
+    DEFAULT_SENSOR_MODE,
+    ROOT,
+    load_sensor_selection,
+    resolve_output_dir,
+)
 
 PROCESSING_VERSION = "phase1b-0.1.0"
 BASELINE_METHOD = "eligible regular observations grouped by sensor_id + weekday + hour"
@@ -31,7 +30,6 @@ BASELINE_POPULATION = (
 )
 QUANTILE_METHOD = "linear interpolation at index (n - 1) * probability (Hyndman-Fan type 7)"
 MAD_METHOD = "median of absolute deviations from the group median; unscaled"
-EXPECTED_BASELINE_GROUP_COUNT = 3 * 7 * 24
 WEEKDAY_ORDER = {
     "Monday": 0,
     "Tuesday": 1,
@@ -55,6 +53,19 @@ DISALLOWED_EXCLUSION_REASONS = {
     "missing_observation",
     "low_confidence_observation",
 }
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build regular baseline distributions."
+    )
+    parser.add_argument("--sensor-mode", default=DEFAULT_SENSOR_MODE)
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Override the sensor-mode-aware processed output directory.",
+    )
+    return parser.parse_args()
 
 
 def parse_bool(value: str | None) -> bool:
@@ -110,21 +121,21 @@ def rounded(value: float) -> float:
     return round(value, 3)
 
 
-def load_phase1a_metadata() -> dict[str, Any]:
-    if not PHASE1A_DIAGNOSTICS.exists():
+def load_phase1a_metadata(path: Path) -> dict[str, Any]:
+    if not path.exists():
         return {}
-    return json.loads(PHASE1A_DIAGNOSTICS.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def read_input() -> tuple[
+def read_input(input_file: Path) -> tuple[
     list[dict[str, Any]],
     dict[tuple[str, str, int], list[int]],
     dict[str, str],
     dict[str, Any],
 ]:
-    if not INPUT_FILE.exists():
+    if not input_file.exists():
         raise FileNotFoundError(
-            f"{INPUT_FILE} does not exist. Run Phase 1A classification first."
+            f"{input_file} does not exist. Run Phase 1A classification first."
         )
 
     rows: list[dict[str, Any]] = []
@@ -138,7 +149,7 @@ def read_input() -> tuple[
         "included_missing_rows": 0,
     }
 
-    with INPUT_FILE.open("r", encoding="utf-8", newline="") as handle:
+    with input_file.open("r", encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
             eligible = parse_bool(raw.get("is_regular_baseline_eligible"))
             is_missing = parse_bool(raw.get("is_missing"))
@@ -243,15 +254,19 @@ def build_baselines(
     )
 
 
-def write_outputs(baselines: list[dict[str, Any]]) -> None:
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+def write_outputs(
+    baselines: list[dict[str, Any]],
+    csv_output: Path,
+    json_output: Path,
+) -> None:
+    csv_output.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(baselines[0])
-    with CSV_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
+    with csv_output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(baselines)
 
-    with JSON_OUTPUT.open("w", encoding="utf-8") as handle:
+    with json_output.open("w", encoding="utf-8") as handle:
         json.dump(baselines, handle, ensure_ascii=False, indent=2, allow_nan=False)
         handle.write("\n")
 
@@ -283,6 +298,11 @@ def build_diagnostics(
     baselines: list[dict[str, Any]],
     checks: dict[str, Any],
     phase1a: dict[str, Any],
+    sensor_mode: str,
+    expected_baseline_group_count: int,
+    input_file: Path,
+    csv_output: Path,
+    json_output: Path,
 ) -> dict[str, Any]:
     eligible_count = sum(
         1 for row in input_rows if row["is_regular_baseline_eligible"]
@@ -305,7 +325,7 @@ def build_diagnostics(
         for row in baselines
         if row["baseline_confidence"] == "insufficient"
     ]
-    missing_group_count = EXPECTED_BASELINE_GROUP_COUNT - len(baselines)
+    missing_group_count = expected_baseline_group_count - len(baselines)
     implausible_groups = [
         compact_group(row)
         for row in baselines
@@ -343,7 +363,7 @@ def build_diagnostics(
             checks["eligible_rows_with_missing_observation"] == 0
         ),
         "baseline_group_count_not_above_expected": (
-            len(baselines) <= EXPECTED_BASELINE_GROUP_COUNT
+            len(baselines) <= expected_baseline_group_count
         ),
         "sample_sizes_plausible_for_one_year": not implausible_groups,
     }
@@ -363,19 +383,21 @@ def build_diagnostics(
     )
     return {
         "processing_version": PROCESSING_VERSION,
-        "input_file": INPUT_FILE.relative_to(ROOT).as_posix(),
+        "sensor_mode": sensor_mode,
+        "input_file": input_file.relative_to(ROOT).as_posix(),
         "output_files": [
-            CSV_OUTPUT.relative_to(ROOT).as_posix(),
-            JSON_OUTPUT.relative_to(ROOT).as_posix(),
+            csv_output.relative_to(ROOT).as_posix(),
+            json_output.relative_to(ROOT).as_posix(),
         ],
         "study_period": study_period,
         "selected_sensor_ids": selected_sensor_ids,
+        "selected_sensor_count": len(selected_sensor_ids),
         "input_row_count": len(input_rows),
         "eligible_input_row_count": eligible_count,
         "ineligible_input_row_count": len(input_rows) - eligible_count,
         "baseline_population_row_count": baseline_population_count,
         "baseline_group_count": len(baselines),
-        "expected_baseline_group_count": EXPECTED_BASELINE_GROUP_COUNT,
+        "expected_baseline_group_count": expected_baseline_group_count,
         "missing_baseline_group_count": missing_group_count,
         "sample_size_summary": sample_size_summary(baselines),
         "baseline_confidence_counts": {
@@ -411,15 +433,44 @@ def build_diagnostics(
 
 
 def main() -> None:
-    phase1a = load_phase1a_metadata()
-    input_rows, grouped, sensor_names, checks = read_input()
+    args = parse_args()
+    output_dir = resolve_output_dir(args.output_dir, args.sensor_mode)
+    input_file = output_dir / "context_classified_panel.csv"
+    phase1a_diagnostics = output_dir / "phase1a_diagnostics.json"
+    csv_output = output_dir / "regular_baselines.csv"
+    json_output = output_dir / "regular_baselines.json"
+    diagnostics_output = output_dir / "phase1b_diagnostics.json"
+    configured_selection = load_sensor_selection(args.sensor_mode)
+    configured_sensor_ids = {
+        row["sensor_id"] for row in configured_selection
+    }
+    phase1a = load_phase1a_metadata(phase1a_diagnostics)
+    input_rows, grouped, sensor_names, checks = read_input(input_file)
+    input_sensor_ids = {row["sensor_id"] for row in input_rows}
+    if input_sensor_ids != configured_sensor_ids:
+        raise ValueError(
+            "Input panel sensors do not match configured mode "
+            f"{args.sensor_mode}: input={sorted(input_sensor_ids, key=int)}, "
+            f"configured={sorted(configured_sensor_ids, key=int)}"
+        )
+    expected_baseline_group_count = len(input_sensor_ids) * 7 * 24
     study_period = phase1a.get("study_period", {})
     baselines = build_baselines(grouped, sensor_names, study_period)
     if not baselines:
         raise ValueError("No regular baseline groups could be constructed.")
-    write_outputs(baselines)
-    diagnostics = build_diagnostics(input_rows, baselines, checks, phase1a)
-    with DIAGNOSTICS_OUTPUT.open("w", encoding="utf-8") as handle:
+    write_outputs(baselines, csv_output, json_output)
+    diagnostics = build_diagnostics(
+        input_rows,
+        baselines,
+        checks,
+        phase1a,
+        args.sensor_mode,
+        expected_baseline_group_count,
+        input_file,
+        csv_output,
+        json_output,
+    )
+    with diagnostics_output.open("w", encoding="utf-8") as handle:
         json.dump(diagnostics, handle, ensure_ascii=False, indent=2, allow_nan=False)
         handle.write("\n")
     print(json.dumps(diagnostics, indent=2))

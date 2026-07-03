@@ -6,6 +6,7 @@ calculate baselines, activity scores, anomaly scores, or pulse scores.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import re
@@ -14,27 +15,23 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from analysis_config import (
+    DEFAULT_SENSOR_MODE,
+    ROOT,
+    load_sensor_selection,
+    resolve_output_dir,
+)
 
-ROOT = Path(__file__).resolve().parents[1]
 PEDESTRIAN_FILE = ROOT / "data" / "raw" / "pedestrian" / "pedestrian_counts_hourly_full.csv"
 SENSOR_FILE = ROOT / "data" / "raw" / "sensors" / "pedestrian_sensor_locations.csv"
 WEATHER_FILE = ROOT / "data" / "raw" / "weather" / "open_meteo_melbourne_hourly_2025.json"
 CALENDAR_FILE = ROOT / "data" / "raw" / "calendar" / "victoria_important_dates_2025.csv"
 MANUAL_EVENTS_FILE = ROOT / "data" / "manual" / "events_manual.csv"
-PROCESSED_DIR = ROOT / "data" / "processed"
-CSV_OUTPUT = PROCESSED_DIR / "analytical_hourly_panel.csv"
-JSON_OUTPUT = PROCESSED_DIR / "analytical_hourly_panel.json"
 
 STUDY_START = datetime(2025, 1, 1, 0, 0)
 STUDY_END = datetime(2025, 12, 31, 23, 0)
 MELBOURNE_DST_END = datetime(2025, 4, 6, 3, 0)
 MELBOURNE_DST_START = datetime(2025, 10, 5, 2, 0)
-SELECTED_SENSOR_IDS = ("4", "3", "133")
-SENSOR_DISPLAY_CONFIG = {
-    "4": {"precinct": "Civic Core", "short_label": "Town Hall"},
-    "3": {"precinct": "Retail / Transit", "short_label": "Melbourne Central"},
-    "133": {"precinct": "Station Gateway", "short_label": "Southern Cross"},
-}
 PROCESSING_STAGE = "canonical_analytical_panel"
 PROCESSING_VERSION = "phase1a-0.1.0"
 
@@ -49,6 +46,19 @@ LIST_FIELDS = {
     "manual_event_source_urls",
     "manual_event_expected_effects",
 }
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build the canonical analytical sensor-hour panel."
+    )
+    parser.add_argument("--sensor-mode", default=DEFAULT_SENSOR_MODE)
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Override the sensor-mode-aware processed output directory.",
+    )
+    return parser.parse_args()
 
 
 def parse_int(value: str | None) -> int | None:
@@ -114,14 +124,22 @@ def unique_nonempty(values: list[str]) -> list[str]:
     return list(dict.fromkeys(value for value in values if value))
 
 
-def read_sensors() -> dict[str, dict[str, Any]]:
+def read_sensors(
+    selection: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    selected_by_id = {row["sensor_id"]: row for row in selection}
     sensors: dict[str, dict[str, Any]] = {}
     with SENSOR_FILE.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
             sensor_id = row.get("Location_ID", "")
-            if sensor_id not in SELECTED_SENSOR_IDS:
+            if sensor_id not in selected_by_id:
                 continue
-            display = SENSOR_DISPLAY_CONFIG[sensor_id]
+            configured = selected_by_id[sensor_id]
+            location_label = (
+                configured.get("location_label")
+                or row.get("Sensor_Description", "")
+                or row.get("Sensor_Name", "")
+            )
             sensors[sensor_id] = {
                 "sensor_id": sensor_id,
                 "sensor_name": row.get("Sensor_Name", ""),
@@ -131,23 +149,32 @@ def read_sensors() -> dict[str, dict[str, Any]]:
                 "latitude": parse_float(row.get("Latitude")),
                 "longitude": parse_float(row.get("Longitude")),
                 "sensor_location": row.get("Location", ""),
-                "precinct": display["precinct"],
-                "sensor_short_label": display["short_label"],
+                "precinct": location_label,
+                "sensor_short_label": location_label,
+                "sensor_selection_tier": configured.get("selection_tier", ""),
+                "sensor_inclusion_reason": configured.get("inclusion_reason", ""),
             }
 
-    missing = [sensor_id for sensor_id in SELECTED_SENSOR_IDS if sensor_id not in sensors]
+    missing = [
+        sensor_id for sensor_id in selected_by_id if sensor_id not in sensors
+    ]
     if missing:
         raise ValueError(f"Selected sensors missing from metadata: {', '.join(missing)}")
     return sensors
 
 
-def read_pedestrian_observations() -> dict[tuple[str, str], dict[str, Any]]:
+def read_pedestrian_observations(
+    selected_sensor_ids: set[str],
+) -> dict[tuple[str, str], dict[str, Any]]:
     observations: dict[tuple[str, str], dict[str, Any]] = {}
     with PEDESTRIAN_FILE.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
             sensing_date = row.get("sensing_date", "")
             sensor_id = row.get("location_id", "")
-            if not sensing_date.startswith("2025-") or sensor_id not in SELECTED_SENSOR_IDS:
+            if (
+                not sensing_date.startswith("2025-")
+                or sensor_id not in selected_sensor_ids
+            ):
                 continue
             hour = parse_int(row.get("hourday"))
             if hour is None or not 0 <= hour <= 23:
@@ -362,9 +389,13 @@ def events_for_hour(events: list[dict[str, Any]], value: datetime) -> list[dict[
     return [event for event in events if event["start"] < hour_end and event["end"] >= value]
 
 
-def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    sensors = read_sensors()
-    observations = read_pedestrian_observations()
+def build_rows(
+    selection: list[dict[str, Any]],
+    sensor_mode: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    selected_sensor_ids = [row["sensor_id"] for row in selection]
+    sensors = read_sensors(selection)
+    observations = read_pedestrian_observations(set(selected_sensor_ids))
     weather = read_weather()
     calendar, calendar_diagnostics = read_calendar()
     events = read_manual_events()
@@ -378,7 +409,7 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         calendar_record = calendar[date_key]
         matching_events = events_for_hour(events, current)
 
-        for sensor_id in SELECTED_SENSOR_IDS:
+        for sensor_id in selected_sensor_ids:
             observation = observations.get((timestamp_key, sensor_id))
             source_hour_present = observation is not None
             observed_count = observation["observed_count"] if observation else None
@@ -405,6 +436,7 @@ def build_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 "hour": current.hour,
                 "weekday": current.strftime("%A"),
                 "timezone": "Australia/Melbourne",
+                "sensor_mode": sensor_mode,
                 **sensors[sensor_id],
                 "source_record_id": observation["source_record_id"] if observation else "",
                 "observed_count": observed_count,
@@ -479,36 +511,48 @@ def csv_value(field: str, value: Any) -> Any:
     return value
 
 
-def write_outputs(rows: list[dict[str, Any]]) -> None:
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+def write_outputs(
+    rows: list[dict[str, Any]],
+    csv_output: Path,
+    json_output: Path,
+) -> None:
+    csv_output.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0])
-    with CSV_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
+    with csv_output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
             writer.writerow({field: csv_value(field, row[field]) for field in fieldnames})
 
-    with JSON_OUTPUT.open("w", encoding="utf-8") as handle:
+    with json_output.open("w", encoding="utf-8") as handle:
         json.dump(rows, handle, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
 
 
 def main() -> None:
-    rows, diagnostics = build_rows()
-    write_outputs(rows)
-    expected_rows = 8760 * len(SELECTED_SENSOR_IDS)
+    args = parse_args()
+    output_dir = resolve_output_dir(args.output_dir, args.sensor_mode)
+    csv_output = output_dir / "analytical_hourly_panel.csv"
+    json_output = output_dir / "analytical_hourly_panel.json"
+    selection = load_sensor_selection(args.sensor_mode)
+    selected_sensor_ids = [row["sensor_id"] for row in selection]
+    rows, diagnostics = build_rows(selection, args.sensor_mode)
+    write_outputs(rows, csv_output, json_output)
+    expected_rows = 8760 * len(selected_sensor_ids)
     if len(rows) != expected_rows:
         raise ValueError(f"Expected {expected_rows} rows, generated {len(rows)}")
     print(
         json.dumps(
             {
                 "processing_stage": PROCESSING_STAGE,
+                "sensor_mode": args.sensor_mode,
                 "rows": len(rows),
                 "expected_rows": expected_rows,
-                "selected_sensors": list(SELECTED_SENSOR_IDS),
+                "selected_sensor_count": len(selected_sensor_ids),
+                "selected_sensor_ids": selected_sensor_ids,
                 "manual_event_records_loaded": diagnostics["manual_event_records_loaded"],
                 "calendar_matched_date_count": diagnostics["calendar_matched_date_count"],
-                "csv_output": str(CSV_OUTPUT),
-                "json_output": str(JSON_OUTPUT),
+                "csv_output": str(csv_output),
+                "json_output": str(json_output),
             },
             indent=2,
         )

@@ -6,25 +6,23 @@ baseline distributions, normalised scores, or anomaly candidates.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-
-ROOT = Path(__file__).resolve().parents[1]
-PROCESSED_DIR = ROOT / "data" / "processed"
-INPUT_CSV = PROCESSED_DIR / "analytical_hourly_panel.csv"
-CSV_OUTPUT = PROCESSED_DIR / "context_classified_panel.csv"
-JSON_OUTPUT = PROCESSED_DIR / "context_classified_panel.json"
-DIAGNOSTICS_OUTPUT = PROCESSED_DIR / "phase1a_diagnostics.json"
+from analysis_config import (
+    DEFAULT_SENSOR_MODE,
+    ROOT,
+    load_sensor_selection,
+    resolve_output_dir,
+)
 
 PROCESSING_STAGE = "context_classification"
 PROCESSING_VERSION = "phase1a-0.1.0"
-SELECTED_SENSOR_IDS = ("4", "3", "133")
 EXPECTED_HOURS = 8760
-EXPECTED_ROWS = EXPECTED_HOURS * len(SELECTED_SENSOR_IDS)
 
 # Provisional Phase 1A context rule; it is context, not causal evidence.
 WEATHER_DISRUPTION_RAIN_THRESHOLD = 0.0
@@ -83,6 +81,19 @@ PRIMARY_CONTEXT_PRECEDENCE = (
 )
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Classify contexts and regular-baseline eligibility."
+    )
+    parser.add_argument("--sensor-mode", default=DEFAULT_SENSOR_MODE)
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Override the sensor-mode-aware processed output directory.",
+    )
+    return parser.parse_args()
+
+
 def parse_bool(value: str) -> bool:
     return value.strip().lower() == "true"
 
@@ -114,13 +125,13 @@ def parse_list(value: str) -> list[str]:
     return [str(item) for item in parsed]
 
 
-def read_panel() -> list[dict[str, Any]]:
-    if not INPUT_CSV.exists():
+def read_panel(input_csv: Path) -> list[dict[str, Any]]:
+    if not input_csv.exists():
         raise FileNotFoundError(
-            f"{INPUT_CSV} does not exist. Run build_analytical_panel.py first."
+            f"{input_csv} does not exist. Run build_analytical_panel.py first."
         )
     rows: list[dict[str, Any]] = []
-    with INPUT_CSV.open("r", encoding="utf-8", newline="") as handle:
+    with input_csv.open("r", encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
             row: dict[str, Any] = dict(raw)
             for field in LIST_FIELDS.intersection(row):
@@ -212,19 +223,27 @@ def csv_value(field: str, value: Any) -> Any:
     return value
 
 
-def write_panels(rows: list[dict[str, Any]]) -> None:
+def write_panels(
+    rows: list[dict[str, Any]],
+    csv_output: Path,
+    json_output: Path,
+) -> None:
     fieldnames = list(rows[0])
-    with CSV_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
+    with csv_output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
             writer.writerow({field: csv_value(field, row[field]) for field in fieldnames})
 
-    with JSON_OUTPUT.open("w", encoding="utf-8") as handle:
+    with json_output.open("w", encoding="utf-8") as handle:
         json.dump(rows, handle, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
 
 
-def build_diagnostics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def build_diagnostics(
+    rows: list[dict[str, Any]],
+    sensor_mode: str,
+    configured_sensor_ids: list[str],
+) -> dict[str, Any]:
     missing_by_sensor: Counter[str] = Counter()
     tag_counts: Counter[str] = Counter()
     exclusion_counts: Counter[str] = Counter()
@@ -251,16 +270,27 @@ def build_diagnostics(rows: list[dict[str, Any]]) -> dict[str, Any]:
             eligible_count += 1
 
     unique_timestamps = {row["local_timestamp_key"] for row in rows}
-    sensors = sorted(sensor_row_counts)
-    if len(rows) != EXPECTED_ROWS:
-        warnings.append(f"Expected {EXPECTED_ROWS} rows but found {len(rows)}.")
+    sensors = sorted(sensor_row_counts, key=int)
+    expected_rows = len(configured_sensor_ids) * len(unique_timestamps)
+    if len(rows) != expected_rows:
+        warnings.append(f"Expected {expected_rows} rows but found {len(rows)}.")
     if len(unique_timestamps) != EXPECTED_HOURS:
         warnings.append(
             f"Expected {EXPECTED_HOURS} hourly timestamps but found {len(unique_timestamps)}."
         )
-    unexpected_sensors = sorted(set(sensors) - set(SELECTED_SENSOR_IDS))
+    unexpected_sensors = sorted(
+        set(sensors) - set(configured_sensor_ids), key=int
+    )
+    missing_configured_sensors = sorted(
+        set(configured_sensor_ids) - set(sensors), key=int
+    )
     if unexpected_sensors:
         warnings.append(f"Unexpected sensors present: {', '.join(unexpected_sensors)}.")
+    if missing_configured_sensors:
+        warnings.append(
+            "Configured sensors absent from panel: "
+            f"{', '.join(missing_configured_sensors)}."
+        )
     if weather_missing_count:
         warnings.append(f"{weather_missing_count} rows have missing hourly weather context.")
 
@@ -275,15 +305,17 @@ def build_diagnostics(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
     return {
         "processing_version": PROCESSING_VERSION,
+        "sensor_mode": sensor_mode,
         "study_period": {
             "start": "2025-01-01T00:00:00",
             "end": "2025-12-31T23:00:00",
             "timezone": "Australia/Melbourne",
         },
         "row_count": len(rows),
-        "expected_row_count": EXPECTED_ROWS,
-        "selected_sensor_count": len(sensors),
-        "selected_sensor_ids": sensors,
+        "expected_row_count": expected_rows,
+        "selected_sensor_count": len(configured_sensor_ids),
+        "selected_sensor_ids": sorted(configured_sensor_ids, key=int),
+        "actual_panel_sensor_count": len(sensors),
         "hourly_timestamp_count": len(unique_timestamps),
         "expected_hourly_timestamp_count": EXPECTED_HOURS,
         "sensor_row_counts": dict(sorted(sensor_row_counts.items())),
@@ -309,11 +341,22 @@ def build_diagnostics(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def main() -> None:
-    source_rows = read_panel()
+    args = parse_args()
+    output_dir = resolve_output_dir(args.output_dir, args.sensor_mode)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    input_csv = output_dir / "analytical_hourly_panel.csv"
+    csv_output = output_dir / "context_classified_panel.csv"
+    json_output = output_dir / "context_classified_panel.json"
+    diagnostics_output = output_dir / "phase1a_diagnostics.json"
+    selection = load_sensor_selection(args.sensor_mode)
+    configured_sensor_ids = [row["sensor_id"] for row in selection]
+    source_rows = read_panel(input_csv)
     rows = [classify_row(row) for row in source_rows]
-    write_panels(rows)
-    diagnostics = build_diagnostics(rows)
-    with DIAGNOSTICS_OUTPUT.open("w", encoding="utf-8") as handle:
+    write_panels(rows, csv_output, json_output)
+    diagnostics = build_diagnostics(
+        rows, args.sensor_mode, configured_sensor_ids
+    )
+    with diagnostics_output.open("w", encoding="utf-8") as handle:
         json.dump(diagnostics, handle, ensure_ascii=False, indent=2, allow_nan=False)
         handle.write("\n")
     print(json.dumps(diagnostics, indent=2))

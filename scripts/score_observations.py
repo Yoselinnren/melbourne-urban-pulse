@@ -7,6 +7,7 @@ event explanations, or build dashboard summaries.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import math
@@ -15,19 +16,14 @@ from pathlib import Path
 from statistics import fmean, median
 from typing import Any
 
-
-ROOT = Path(__file__).resolve().parents[1]
-PANEL_INPUT = ROOT / "data" / "processed" / "context_classified_panel.csv"
-BASELINE_INPUT = ROOT / "data" / "processed" / "regular_baselines.csv"
-PHASE1A_DIAGNOSTICS = ROOT / "data" / "processed" / "phase1a_diagnostics.json"
-PHASE1B_DIAGNOSTICS = ROOT / "data" / "processed" / "phase1b_diagnostics.json"
-OUTPUT_DIR = ROOT / "data" / "processed"
-CSV_OUTPUT = OUTPUT_DIR / "scored_analytical_panel.csv"
-JSON_OUTPUT = OUTPUT_DIR / "scored_analytical_panel.json"
-DIAGNOSTICS_OUTPUT = OUTPUT_DIR / "phase1c_diagnostics.json"
+from analysis_config import (
+    DEFAULT_SENSOR_MODE,
+    ROOT,
+    load_sensor_selection,
+    resolve_output_dir,
+)
 
 PROCESSING_VERSION = "phase1c-0.1.0"
-EXPECTED_BASELINE_GROUP_COUNT = 3 * 7 * 24
 SCORING_CONFIDENCE_BY_BASELINE_LABEL = {
     "high": 0.9,
     "medium": 0.75,
@@ -96,6 +92,19 @@ BASELINE_FLOAT_FIELDS = {
 }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Score observations against regular baselines."
+    )
+    parser.add_argument("--sensor-mode", default=DEFAULT_SENSOR_MODE)
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Override the sensor-mode-aware processed output directory.",
+    )
+    return parser.parse_args()
+
+
 def parse_bool(value: str | None) -> bool:
     return bool(value) and value.strip().lower() == "true"
 
@@ -140,14 +149,16 @@ def load_optional_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def read_baselines() -> dict[tuple[str, str, int], dict[str, Any]]:
-    if not BASELINE_INPUT.exists():
+def read_baselines(
+    baseline_input: Path,
+) -> dict[tuple[str, str, int], dict[str, Any]]:
+    if not baseline_input.exists():
         raise FileNotFoundError(
-            f"{BASELINE_INPUT} does not exist. Run Phase 1B first."
+            f"{baseline_input} does not exist. Run Phase 1B first."
         )
 
     baselines: dict[tuple[str, str, int], dict[str, Any]] = {}
-    with BASELINE_INPUT.open("r", encoding="utf-8", newline="") as handle:
+    with baseline_input.open("r", encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
             hour = parse_int(raw.get("hour"))
             if hour is None:
@@ -180,14 +191,14 @@ def read_baselines() -> dict[tuple[str, str, int], dict[str, Any]]:
     return baselines
 
 
-def read_panel() -> list[dict[str, Any]]:
-    if not PANEL_INPUT.exists():
+def read_panel(panel_input: Path) -> list[dict[str, Any]]:
+    if not panel_input.exists():
         raise FileNotFoundError(
-            f"{PANEL_INPUT} does not exist. Run Phase 1A classification first."
+            f"{panel_input} does not exist. Run Phase 1A classification first."
         )
 
     rows: list[dict[str, Any]] = []
-    with PANEL_INPUT.open("r", encoding="utf-8", newline="") as handle:
+    with panel_input.open("r", encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
             row: dict[str, Any] = dict(raw)
             for field in LIST_FIELDS.intersection(row):
@@ -385,16 +396,20 @@ def csv_value(field: str, value: Any) -> Any:
     return value
 
 
-def write_outputs(rows: list[dict[str, Any]]) -> None:
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+def write_outputs(
+    rows: list[dict[str, Any]],
+    csv_output: Path,
+    json_output: Path,
+) -> None:
+    csv_output.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0])
-    with CSV_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
+    with csv_output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
             writer.writerow({field: csv_value(field, row[field]) for field in fieldnames})
 
-    with JSON_OUTPUT.open("w", encoding="utf-8") as handle:
+    with json_output.open("w", encoding="utf-8") as handle:
         json.dump(rows, handle, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
 
 
@@ -414,6 +429,13 @@ def build_diagnostics(
     input_rows: list[dict[str, Any]],
     output_rows: list[dict[str, Any]],
     baselines: dict[tuple[str, str, int], dict[str, Any]],
+    sensor_mode: str,
+    panel_input: Path,
+    baseline_input: Path,
+    csv_output: Path,
+    json_output: Path,
+    phase1a_diagnostics: Path,
+    phase1b_diagnostics: Path,
 ) -> dict[str, Any]:
     baseline_join_success_count = sum(
         1 for row in output_rows if row["baseline_available"]
@@ -523,14 +545,16 @@ def build_diagnostics(
     panel_join_keys = {
         (row["sensor_id"], row["weekday"], row["hour"]) for row in input_rows
     }
+    baseline_sensor_ids = {key[0] for key in baselines}
+    expected_baseline_group_count = len(baseline_sensor_ids) * 7 * 24
 
     sanity_checks = {
         "output_row_count_equals_input": len(output_rows) == len(input_rows),
         "no_rows_dropped": len(output_rows) == len(input_rows),
         "missing_observations_have_no_numeric_scores": not missing_rows_with_scores,
         "all_nonmissing_rows_have_baseline": not nonmissing_rows_without_baseline,
-        "baseline_file_has_expected_504_keys": len(baselines)
-        == EXPECTED_BASELINE_GROUP_COUNT,
+        "baseline_file_has_expected_dynamic_key_count": len(baselines)
+        == expected_baseline_group_count,
         "all_panel_join_keys_covered": panel_join_keys.issubset(baselines.keys()),
         "score_direction_preserved": not direction_mismatches,
         "anomaly_strength_within_unit_interval": not invalid_strength_rows,
@@ -566,13 +590,14 @@ def build_diagnostics(
 
     return {
         "processing_version": PROCESSING_VERSION,
+        "sensor_mode": sensor_mode,
         "input_files": [
-            PANEL_INPUT.relative_to(ROOT).as_posix(),
-            BASELINE_INPUT.relative_to(ROOT).as_posix(),
+            panel_input.relative_to(ROOT).as_posix(),
+            baseline_input.relative_to(ROOT).as_posix(),
         ],
         "output_files": [
-            CSV_OUTPUT.relative_to(ROOT).as_posix(),
-            JSON_OUTPUT.relative_to(ROOT).as_posix(),
+            csv_output.relative_to(ROOT).as_posix(),
+            json_output.relative_to(ROOT).as_posix(),
         ],
         "input_row_count": len(input_rows),
         "output_row_count": len(output_rows),
@@ -603,7 +628,10 @@ def build_diagnostics(
         },
         "rows_by_primary_context": dict(sorted(primary_context_counts.items())),
         "baseline_join_key_count": len(baselines),
+        "expected_baseline_join_key_count": expected_baseline_group_count,
         "panel_join_key_count": len(panel_join_keys),
+        "selected_sensor_count": len(baseline_sensor_ids),
+        "selected_sensor_ids": sorted(baseline_sensor_ids, key=int),
         "sanity_checks": sanity_checks,
         "warnings": warnings,
         "notes": {
@@ -615,23 +643,60 @@ def build_diagnostics(
             "anomaly_strength": "0 through |robust_z| <= 0.5, linear to 1 at |robust_z| = 3, then capped; percentile fallback only when robust scale is unavailable",
             "scoring_confidence": "minimum of observation confidence and baseline-label reliability weight",
             "baseline_confidence_weights": SCORING_CONFIDENCE_BY_BASELINE_LABEL,
-            "phase1a_diagnostics_available": PHASE1A_DIAGNOSTICS.exists(),
-            "phase1b_diagnostics_available": PHASE1B_DIAGNOSTICS.exists(),
+            "phase1a_diagnostics_available": phase1a_diagnostics.exists(),
+            "phase1b_diagnostics_available": phase1b_diagnostics.exists(),
         },
     }
 
 
 def main() -> None:
+    args = parse_args()
+    output_dir = resolve_output_dir(args.output_dir, args.sensor_mode)
+    panel_input = output_dir / "context_classified_panel.csv"
+    baseline_input = output_dir / "regular_baselines.csv"
+    phase1a_diagnostics = output_dir / "phase1a_diagnostics.json"
+    phase1b_diagnostics = output_dir / "phase1b_diagnostics.json"
+    csv_output = output_dir / "scored_analytical_panel.csv"
+    json_output = output_dir / "scored_analytical_panel.json"
+    diagnostics_output = output_dir / "phase1c_diagnostics.json"
+    configured_sensor_ids = {
+        row["sensor_id"] for row in load_sensor_selection(args.sensor_mode)
+    }
     # Read optional diagnostics to verify that upstream metadata remains valid
     # and available, while keeping the scored-row contract driven by CSV inputs.
-    load_optional_json(PHASE1A_DIAGNOSTICS)
-    load_optional_json(PHASE1B_DIAGNOSTICS)
-    baselines = read_baselines()
-    input_rows = read_panel()
+    load_optional_json(phase1a_diagnostics)
+    load_optional_json(phase1b_diagnostics)
+    baselines = read_baselines(baseline_input)
+    input_rows = read_panel(panel_input)
+    input_sensor_ids = {row["sensor_id"] for row in input_rows}
+    baseline_sensor_ids = {key[0] for key in baselines}
+    if not (
+        configured_sensor_ids
+        == input_sensor_ids
+        == baseline_sensor_ids
+    ):
+        raise ValueError(
+            "Sensor-set mismatch for scoring mode "
+            f"{args.sensor_mode}: "
+            f"configured_sensor_ids={sorted(configured_sensor_ids, key=int)}, "
+            f"input_sensor_ids={sorted(input_sensor_ids, key=int)}, "
+            f"baseline_sensor_ids={sorted(baseline_sensor_ids, key=int)}"
+        )
     output_rows = [score_row(row, baselines) for row in input_rows]
-    diagnostics = build_diagnostics(input_rows, output_rows, baselines)
-    write_outputs(output_rows)
-    with DIAGNOSTICS_OUTPUT.open("w", encoding="utf-8") as handle:
+    diagnostics = build_diagnostics(
+        input_rows,
+        output_rows,
+        baselines,
+        args.sensor_mode,
+        panel_input,
+        baseline_input,
+        csv_output,
+        json_output,
+        phase1a_diagnostics,
+        phase1b_diagnostics,
+    )
+    write_outputs(output_rows, csv_output, json_output)
+    with diagnostics_output.open("w", encoding="utf-8") as handle:
         json.dump(diagnostics, handle, ensure_ascii=False, indent=2, allow_nan=False)
         handle.write("\n")
     print(json.dumps(diagnostics, indent=2))
