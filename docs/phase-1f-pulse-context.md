@@ -56,8 +56,10 @@ Expanded rows retain:
 - active local hour;
 - episode score, strength, and observed-volume summaries.
 
-The local hourly key is the canonical temporal co-occurrence key, matching the
-nominal local-hour convention used by the analytical panel.
+Phase 1F groups pulse context using nominal Melbourne local hourly keys derived
+from the episode timestamps. Timestamp fields preserve source traceability, but
+local hourly order is the analytical grouping basis, matching the convention
+used by the analytical panel.
 
 ## Temporal Co-Occurrence
 
@@ -108,6 +110,11 @@ This classification is peak-based: a group can be labelled
 its `min_active_sensor_count` is lower. The minimum, mean, and maximum active
 sensor counts should be interpreted together to understand participation
 changes across the pulse duration.
+
+`total_observed_count` sums the full observed-count totals of the unique member
+episodes once each. It is not restricted to only the hours where those episodes
+overlap the pulse group, so it should be interpreted as member-episode volume
+rather than pulse-overlap-hour volume.
 
 Pulse group IDs are deterministic:
 
@@ -166,6 +173,10 @@ Sanity checks verify:
 - Phase 1F does not use external event data.
 - Phase 1F does not explain or attribute real-world causes.
 - Phase 1F does not rank final anomalies.
+- Raw `peak_abs_score` is an unbounded robust-z-style value and should not be
+  used alone for later importance ranking. Later review or ranking should
+  combine pulse scope, duration, active sensor count, observed volume, score
+  bands, and baseline confidence.
 - Phase 1F does not modify frontend or public dashboard data.
 - Phase 1F does not train machine-learning or edge-AI models.
 - Spatial clustering, event explanation, and final candidate review are
