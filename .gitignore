@@ -63,6 +63,7 @@ public/images/raw/
 *.RAF
 *.RW2
 *.XMP
+photos
 
 # local Obsidian workspace
 pulse obsidian/.obsidian/
