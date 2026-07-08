@@ -14,7 +14,7 @@ import json
 import math
 import re
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -376,6 +376,8 @@ def candidate_text(row: dict[str, str]) -> str:
             row.get("candidate_scope_or_context", ""),
             row.get("sensor_ids_or_blank", ""),
             row.get("sensor_labels_or_blank", ""),
+            row.get("_phase1g_sensor_ids", ""),
+            row.get("_phase1g_sensor_labels", ""),
         ]
     ).lower()
 
@@ -391,6 +393,7 @@ def evidence_tokens(row: dict[str, str]) -> set[str]:
     aliases = {
         "mel_cbd": "cbd",
         "mel cbd": "cbd",
+        "queen victoria market": "qvm",
         "state_wide": "victoria",
         "state wide": "victoria",
         "city_wide": "melbourne",
@@ -407,6 +410,7 @@ def evidence_tokens(row: dict[str, str]) -> set[str]:
 
 def label_match_count(tokens: set[str], candidate: dict[str, str]) -> int:
     labels = split_pipe(candidate.get("sensor_labels_or_blank"))
+    labels.extend(split_pipe(candidate.get("_phase1g_sensor_labels")))
     if not labels:
         labels = [candidate.get("sensor_labels_or_blank", "")]
     count = 0
@@ -427,6 +431,7 @@ def sensor_id_match(row: dict[str, str], candidate: dict[str, str]) -> int:
     )
     ids = set(re.findall(r"\b\d+\b", text))
     candidate_ids = set(split_pipe(candidate.get("sensor_ids_or_blank")))
+    candidate_ids.update(split_pipe(candidate.get("_phase1g_sensor_ids")))
     return len(ids.intersection(candidate_ids))
 
 
@@ -503,6 +508,48 @@ def interval_hours(start: datetime, end: datetime) -> float:
     return max(0.0, (end - start).total_seconds() / 3600)
 
 
+def candidate_matching_end(end: datetime) -> datetime:
+    return end + timedelta(hours=1)
+
+
+def enrich_queue_candidates(
+    queue_rows: list[dict[str, str]],
+    pulses: list[dict[str, str]],
+    episodes: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    pulse_lookup = {row["pulse_group_id"]: row for row in pulses}
+    episode_lookup = {row["episode_id"]: row for row in episodes}
+    enriched: list[dict[str, str]] = []
+    for row in queue_rows:
+        out = dict(row)
+        if row["candidate_type"] == "pulse_group":
+            source = pulse_lookup.get(row["candidate_id"], {})
+            out["_phase1g_sensor_ids"] = "|".join(
+                split_pipe(source.get("member_sensor_ids"))
+                or split_pipe(source.get("sensor_ids"))
+            )
+            out["_phase1g_sensor_labels"] = "|".join(
+                split_pipe(source.get("member_sensor_labels"))
+                or split_pipe(source.get("sensor_labels"))
+            )
+        else:
+            source = episode_lookup.get(row["candidate_id"], {})
+            out["_phase1g_sensor_ids"] = source.get("sensor_id", "")
+            out["_phase1g_sensor_labels"] = "|".join(
+                [
+                    value
+                    for value in (
+                        source.get("sensor_short_label", ""),
+                        source.get("sensor_name", ""),
+                        source.get("sensor_location_label", ""),
+                    )
+                    if value
+                ]
+            )
+        enriched.append(out)
+    return enriched
+
+
 def auto_confidence(
     spatial_relevance: str,
     direction: str,
@@ -537,6 +584,7 @@ def build_matches(
         candidate_end = parse_timestamp(candidate.get("end_timestamp"))
         if not candidate_start or not candidate_end:
             raise ValueError(f"Unparseable candidate interval: {candidate}")
+        candidate_end = candidate_matching_end(candidate_end)
         candidate_duration = interval_hours(candidate_start, candidate_end)
 
         for evidence in evidence_rows:
@@ -637,8 +685,8 @@ def main() -> None:
     if "candidate_id" not in queue_fields:
         raise ValueError(f"Candidate queue missing candidate_id: {queue_path}")
     # Load Phase 1G files to verify availability and protect them from mutation.
-    read_csv(pulse_path)
-    read_csv(episode_path)
+    pulses, _ = read_csv(pulse_path)
+    episodes, _ = read_csv(episode_path)
 
     normalized, critical_errors, _ = normalize_evidence(evidence_rows, evidence_fields)
     duplicate_count = sum(
@@ -651,7 +699,8 @@ def main() -> None:
             "Critical evidence validation errors: " + "; ".join(critical_errors)
         )
 
-    matches = build_matches(normalized, queue_rows, config.sensor_mode)
+    enriched_queue_rows = enrich_queue_candidates(queue_rows, pulses, episodes)
+    matches = build_matches(normalized, enriched_queue_rows, config.sensor_mode)
 
     normalized_path = output_dir / "normalized_evidence_manual.csv"
     match_path = output_dir / "candidate_evidence_matches.csv"
