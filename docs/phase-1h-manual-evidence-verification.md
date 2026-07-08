@@ -152,6 +152,58 @@ Generated interpretation must not use the following causal phrases:
 
 The queue contains no generated explanation prose.
 
+## Phase 1H-E Explanation-Ready Aggregation
+
+Phase 1H-E reads the Phase 1G context-enriched candidate episodes and pulse
+groups, the Phase 1H-D `candidate_evidence_matches.csv`, the normalized manual
+evidence table, and the human-maintained `evidence_match_reviews.csv`. It writes
+full-row-count outputs:
+
+- `explanation_ready_candidate_episodes.csv/json`
+- `explanation_ready_pulse_groups.csv/json`
+- `phase1h_explanation_ready_diagnostics.json`
+
+The row-count contract is strict: every context-enriched episode and every pulse
+group is retained exactly once. Candidates are not dropped, duplicated, merged,
+ranked, or filtered. Candidates with no evidence links are retained with
+scope-aware readiness metadata.
+
+`not_in_manual_review_scope` means the candidate was not in the Phase 1H manual
+review queue and was not manually researched in this phase. It must not be
+interpreted as unexplained or evidence-free. If a candidate was in the manual
+review queue but no evidence was linked, it is marked
+`review_queue_no_evidence_linked` instead.
+
+Explanation-ready means frontend-ready evidence metadata, not final explanation
+prose. The outputs add structured fields such as evidence counts, evidence IDs,
+source names and URLs, auto-match confidence, direction consistency, spatial
+relevance, review-status summaries, and conservative readiness flags.
+
+Auto-matched pending evidence is different from reviewed evidence:
+
+- `auto_matched_pending_review` means Phase 1H-D found temporal and spatial
+  candidate/evidence links, but no human review has upgraded them.
+- `reviewed_verified_overlap` means a human review has confirmed overlap.
+- `reviewed_plausible_association` means a human review has marked the evidence
+  as plausibly associated with the candidate.
+- `reviewed_insufficient_evidence`, `reviewed_unexplained`, and
+  `reviewed_data_quality_issue` are review outcomes that must not be presented
+  as explanations.
+
+`causal_claim_allowed` remains `false` for every row. `generated_explanation_text`
+is intentionally blank. A future UI may show the structured evidence metadata
+and review status, but must not show causal explanation cards, an Urban Pulse
+Index, infrastructure-pressure conclusions, or ranking language from this stage.
+
+Limitations:
+
+- Evidence links exist only where Phase 1H-D generated candidate/evidence
+  matches.
+- Empty manual review rows leave all links as `pending_review`.
+- Source confidence and auto-match confidence are metadata for review, not proof.
+- Human review of `candidate_evidence_matches.csv` remains the next step before
+  optional final UI explanation cards.
+
 ## What the researcher does next
 
 After Phase 1H-A/B, the researcher must:
@@ -167,11 +219,11 @@ After Phase 1H-A/B, the researcher must:
 - **1H-C:** manually collect and validate evidence facts.
 - **1H-D:** generate candidate/evidence matches using documented temporal and
   spatial rules.
-- **1H-E:** record human match reviews and build explanation-ready datasets.
+- **After 1H-E:** review `candidate_evidence_matches.csv` manually and, only
+  after review, optionally build final UI explanation cards.
 
-Candidate/evidence matching is intentionally absent because the evidence table
-is empty and matching rules require separately validated facts. Phase 1H-A/B
-does not create match outputs, explanation-ready datasets, causal cards,
+Phase 1H-D and 1H-E create match and explanation-ready metadata outputs after
+manual evidence exists. They still do not create causal cards,
 infrastructure-pressure conclusions, an Urban Pulse Index, or frontend changes.
 
 ## Limitations and non-goals
