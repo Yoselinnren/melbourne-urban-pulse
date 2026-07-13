@@ -1,0 +1,6 @@
+import type { Direction, EvidenceReadiness, PulseScope } from "@/lib/types/ui-data";
+export type LoadStatus="idle"|"loading"|"ready"|"error";
+export type ExplorerState={selectedPulseId:string|null;selectedSensorId:string|null;month:number|null;direction:Direction|null;scopes:PulseScope[];evidenceReadiness:EvidenceReadiness[];hoveredPulseId:string|null;hoveredSensorId:string|null;initialDataStatus:LoadStatus;pulseDetailStatus:LoadStatus;sensorDetailStatus:LoadStatus;filtersOpen:boolean;notice:string|null};
+export const initialState:ExplorerState={selectedPulseId:null,selectedSensorId:null,month:null,direction:null,scopes:[],evidenceReadiness:[],hoveredPulseId:null,hoveredSensorId:null,initialDataStatus:"loading",pulseDetailStatus:"idle",sensorDetailStatus:"idle",filtersOpen:false,notice:null};
+export type Action={type:"sync";value:Partial<ExplorerState>}|{type:"set";key:keyof ExplorerState;value:ExplorerState[keyof ExplorerState]}|{type:"status";key:"initialDataStatus"|"pulseDetailStatus"|"sensorDetailStatus";value:LoadStatus};
+export function reducer(s:ExplorerState,a:Action):ExplorerState{if(a.type==="sync")return{...s,...a.value};if(a.type==="status")return{...s,[a.key]:a.value};return{...s,[a.key]:a.value}}
