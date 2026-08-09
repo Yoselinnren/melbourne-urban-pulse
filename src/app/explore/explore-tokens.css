@@ -1,0 +1,34 @@
+:root {
+  --ex-control: #10242e;
+  --ex-control-selected: #173744;
+  --ex-error: #ffbea7;
+  --ex-line-subtle: #18303a;
+  --ex-spatial-bg: #07141b;
+  --ex-participation: #0e2b35;
+  --ex-participation-stroke: #3f6571;
+  --ex-sensor-core: #99b5be;
+  --ex-on-accent: #fff;
+  --ex-grid: #19303b;
+  --ex-grid-label: #47636e;
+  --ex-hover-highlight: #fff;
+  --ex-timeline-bg: #09161d;
+  --ex-lane-line: #142c35;
+  --ex-month-grid: #18323c;
+  --ex-header-bg: #09151c;
+  --ex-space-4: 4px;
+  --ex-space-6: 6px;
+  --ex-space-8: 8px;
+  --ex-space-10: 10px;
+  --ex-space-12: 12px;
+  --ex-space-14: 14px;
+  --ex-space-16: 16px;
+  --ex-space-18: 18px;
+  --ex-space-20: 20px;
+  --ex-space-22: 22px;
+  --ex-space-24: 24px;
+  --ex-radius-none: 0;
+  --ex-radius-sm: 2px;
+  --ex-radius-full: 9999px;
+  --ex-stroke-1: 1px;
+  --ex-stroke-2: 2px;
+}

@@ -1,4 +1,6 @@
-# Melbourne Urban Pulse — Project Context
+# Melbourne Urban Pulse - Project Context
+
+> Current direction: an English-only research portfolio project for research-degree applications. A future personal portfolio and custom domain may contain this project, but are outside the first release.
 
 ## Project Overview
 
@@ -69,10 +71,9 @@ The first version should prefer interpretable methods over black-box modelling.
 - Anomaly Score
 - Weather Comfort Score
 - Calendar Context Flags
-- Urban Pulse Index
 - Confidence Score
 
-The Urban Pulse Index should be documented as a prototype-level composite metric, not as a validated scientific index.
+The current project does not implement or claim a validated Urban Pulse Index.
 
 ## Visual Direction
 
@@ -89,24 +90,18 @@ The first version should use sensor-based 2.5D spikes and ripple effects. If a c
 
 Completed:
 
-- Next.js project scaffold
-- TypeScript and Tailwind baseline
-- Python virtual environment
-- Python data-analysis packages
-- JupyterLab environment
-- ESLint configuration adjusted to ignore virtual environment and raw data folders
-- Core raw datasets collected locally
-- Initial project vision written in the Obsidian folder
+- reproducible analytical phases from source profiling through explanation-ready aggregation;
+- a 12-sensor representative mode with 4,647 episodes and 425 Pulses;
+- deterministic public UI data and independent validation;
+- an annual Explorer with spatial, temporal, filtering, Pulse, and sensor states;
+- evidence schemas, a review queue, 64 evidence facts, and 64 automatic matches.
 
 Not yet completed:
 
-- Replacing the default frontend page
-- Processed dashboard-ready JSON
-- Data profiling notebooks or scripts
-- Baseline and anomaly calculations
-- Manual event annotations
-- Methodology documentation
-- Final visual identity and dashboard design
+- human review of the automatic matches;
+- an approved visual identity and responsive Explorer;
+- the narrative homepage and public methodology presentation;
+- browser, accessibility, and public-release acceptance.
 
 ## Development Rules
 
@@ -120,10 +115,4 @@ Not yet completed:
 
 ## Next Steps
 
-1. Replace the default README with a project-specific English README.
-2. Create documentation skeletons for data model, methodology, and design rationale.
-3. Profile the raw datasets: fields, date ranges, missingness, sensor coverage, and known limitations.
-4. Define the first dashboard JSON schema.
-5. Generate a small processed MVP dataset from selected pedestrian sensors and context data.
-6. Build the first frontend vertical slice using processed JSON.
-7. Add the 2.5D Urban Pulse Field after the data schema is stable.
+See [docs/roadmap.md](docs/roadmap.md) for the ordered milestones, ownership, and acceptance gates.

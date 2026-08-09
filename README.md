@@ -1,5 +1,7 @@
 # Melbourne Urban Pulse
 
+> Current direction: an English-language research portfolio project for research-degree applications. See the [active roadmap](docs/roadmap.md) for the source-of-truth project state.
+
 Melbourne Urban Pulse is a research-oriented urban data storytelling and visual analytics prototype for smart infrastructure research.
 
 The project explores how Melbourne's urban activity changes across time, location, weather, calendar context, and events — and how these signals can be translated into an interpretable interface for future smart infrastructure systems.
@@ -35,21 +37,20 @@ The key visual concept is a **2.5D Urban Pulse Field**, where sensor locations a
 
 Completed:
 
-- Next.js project scaffold
-- TypeScript and Tailwind baseline
-- Python virtual environment for data work
-- Core raw datasets collected locally
-- Initial research and design framing
-- Documentation skeletons
+- reproducible analytical phases from source profiling through explanation-ready aggregation;
+- a 12-sensor representative study with 105,104 observed sensor-hours and 16 explicit missing observations;
+- 4,647 candidate episodes and 425 cross-sensor Pulses;
+- weather, calendar, DST, evidence, and provenance context;
+- 64 evidence facts and 64 automatic matches;
+- deterministic browser-safe UI data with independent validation;
+- an interactive annual Explorer with spatial, temporal, filtering, Pulse, and sensor views.
 
 Not yet completed:
 
-- Processed dashboard-ready dataset
-- Data profiling scripts or notebooks
-- Baseline and anomaly calculations
-- Manual event annotations
-- Custom frontend interface
-- Final visual system
+- human review of automatic evidence matches;
+- a final visual system and responsive Explorer;
+- narrative homepage and methodology presentation;
+- final browser, accessibility, and public-release acceptance.
 
 ## Data Sources
 
@@ -127,17 +128,20 @@ Use the project Python environment for data work:
 .\.venv\Scripts\python.exe
 ```
 
+On this workstation, bare `python` may resolve to MSYS2. Create or repair `.venv` with the explicit standard CPython executable first.
+
 ## Documentation
 
 - [Project context](PROJECT_CONTEXT.md)
+- [Active roadmap](docs/roadmap.md)
 - [Data model](docs/data-model.md)
 - [Methodology](docs/methodology.md)
 - [Design rationale](docs/design-rationale.md)
 
 ## Next Steps
 
-1. Profile the raw datasets.
-2. Define the first dashboard JSON schema.
-3. Generate a small processed MVP dataset.
-4. Build the first frontend vertical slice.
-5. Add the 2.5D Urban Pulse Field after the data schema is stable.
+1. Approve and implement the Explorer visual system.
+2. Complete human evidence review.
+3. Build the English narrative and methodology experience.
+4. Run browser, accessibility, and public-data acceptance.
+5. Prepare the first public research-portfolio release.

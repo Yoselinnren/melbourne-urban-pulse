@@ -53,6 +53,7 @@ data/processed/
 # local env
 .env
 .env.local
+/.codex-state/
 
 # large image files
 public/images/raw/

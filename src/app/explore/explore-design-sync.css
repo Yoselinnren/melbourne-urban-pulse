@@ -1,0 +1,56 @@
+.spatial {
+  background: var(--ex-spatial-bg);
+}
+
+.explorer-header {
+  background: var(--ex-header-bg);
+}
+
+.participation {
+  fill: var(--ex-participation);
+  stroke: var(--ex-participation-stroke);
+}
+
+.sensor-core {
+  fill: var(--ex-sensor-core);
+  stroke: var(--ex-bg);
+}
+
+.sensor-node.member .sensor-core {
+  stroke: var(--ex-on-accent);
+}
+
+.reference-grid path {
+  stroke: var(--ex-grid);
+}
+
+.reference-grid text {
+  fill: var(--ex-grid-label);
+}
+
+.sensor-node[data-sensor-id="66"] .sensor-label,
+.sensor-node[data-sensor-id="66"] .sensor-id {
+  transform: translateY(-20px);
+}
+
+.timeline {
+  background: var(--ex-timeline-bg);
+}
+
+.month-axis span {
+  border-left-color: var(--ex-month-grid);
+}
+
+.timeline-lane {
+  border-bottom-color: var(--ex-lane-line);
+}
+
+.lane-track {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(8.333% - 1px),
+    var(--ex-lane-line) calc(8.333% - 1px),
+    var(--ex-lane-line) 8.333%
+  );
+}
