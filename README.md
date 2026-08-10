@@ -2,9 +2,9 @@
 
 > Current direction: an English-language research portfolio project for research-degree applications. See the [active roadmap](docs/roadmap.md) for the source-of-truth project state.
 
-Melbourne Urban Pulse is a research-oriented urban data storytelling and visual analytics prototype for smart infrastructure research.
+Melbourne Urban Pulse is an English-language research case-study website and visual analytics prototype for smart infrastructure research.
 
-The project explores how Melbourne's urban activity changes across time, location, weather, calendar context, and events — and how these signals can be translated into an interpretable interface for future smart infrastructure systems.
+The project asks how known urban conditions manifest differently across Melbourne's pedestrian sensor network, where observed activity departs from expected city rhythm, and how those differences can be communicated without turning evidence overlap into causation.
 
 This is not intended to be a simple pedestrian-count dashboard. Pedestrian activity is the first implemented signal because the City of Melbourne provides public, structured, spatially located sensor data. The longer-term goal is to design an extensible urban signal interpretation system that can later support vehicle flow, cycling, public transport activity, environmental context, planned works, events, and future edge-generated sensing outputs.
 
@@ -29,9 +29,9 @@ Melbourne Urban Pulse treats the city as a layered signal system:
 2. **Environmental Context** — weather and comfort conditions.
 3. **Calendar Rhythm** — weekdays, weekends, holidays, seasons, and institutional rhythms.
 4. **Event and Disruption Layer** — events, planned works, road closures, and manually reviewed anomalies.
-5. **Infrastructure Pressure Interpretation** — baseline deviation, anomaly strength, confidence, and explanatory cards.
+5. **Evidence and Uncertainty Interpretation** — baseline deviation, anomaly strength, reviewed overlap, confidence, and unresolved context.
 
-The key visual concept is a **2.5D Urban Pulse Field**, where sensor locations are shown on a simplified city plane and activity intensity is represented through height, glow, or ripple effects.
+The key visual concept is a **2.5D Urban Pulse Field** that begins as a data-driven Hero and resolves into the analytical Explorer. Sensor locations are shown on a simplified city plane, with restrained height, glow, ripple, and transition effects encoding observed signals.
 
 ## Current Status
 
@@ -43,14 +43,16 @@ Completed:
 - weather, calendar, DST, evidence, and provenance context;
 - 64 evidence facts and 64 automatic matches;
 - deterministic browser-safe UI data with independent validation;
-- an interactive annual Explorer with spatial, temporal, filtering, Pulse, and sensor views.
+- an approved, responsive annual Explorer with spatial, temporal, filtering, Pulse, and sensor views;
+- Explorer lint, production-build, UI-data, accessibility-baseline, browser, and physical-display checks;
+- 64 reviewed evidence matches covering 15 Pulses and one isolated episode.
 
 Not yet completed:
 
-- human review of automatic evidence matches;
-- a final visual system and responsive Explorer;
-- narrative homepage and methodology presentation;
-- final browser, accessibility, and public-release acceptance.
+- research-result framing and selected-case narrative;
+- the complete Hero, narrative homepage, methodology, and motion system;
+- implementation and acceptance of the full website outside the Explorer;
+- site-wide public-release acceptance.
 
 ## Data Sources
 
@@ -134,14 +136,16 @@ On this workstation, bare `python` may resolve to MSYS2. Create or repair `.venv
 
 - [Project context](PROJECT_CONTEXT.md)
 - [Active roadmap](docs/roadmap.md)
+- [Result framing](docs/result-framing.md)
+- [Full-site design and motion audit](docs/milestone-6-audit.md)
 - [Data model](docs/data-model.md)
 - [Methodology](docs/methodology.md)
 - [Design rationale](docs/design-rationale.md)
 
 ## Next Steps
 
-1. Approve and implement the Explorer visual system.
-2. Complete human evidence review.
-3. Build the English narrative and methodology experience.
-4. Run browser, accessibility, and public-data acceptance.
-5. Prepare the first public research-portfolio release.
+1. Frame the research result and approve contrasting selected cases.
+2. Audit the Figma-to-code gap and evaluate GitHub dynamic-art skills.
+3. Design and approve the complete Hero, narrative flow, methodology, motion, and responsive states.
+4. Implement the approved narrative website and connect it to the Explorer.
+5. Run site-wide acceptance and prepare the first public research-portfolio release.

@@ -4,13 +4,17 @@
 
 ## Project Overview
 
-**Melbourne Urban Pulse** is a research-oriented urban data storytelling and visual analytics prototype. It aims to explain Melbourne's urban rhythm through public sensor data, contextual signals, anomaly patterns, and human-centred interface design.
+**Melbourne Urban Pulse** is a complete research case-study website and visual analytics prototype, not only an Explorer. It uses public sensor data, contextual evidence, data-driven visual art, and an inspectable analytical interface to show how known urban conditions appear differently across Melbourne's pedestrian network.
 
 The project should not be treated as a simple pedestrian-count dashboard. Pedestrian activity is the first implemented signal because it is public, structured, spatially located, and suitable for building a complete data pipeline. The broader ambition is to create an extensible urban signal interpretation system that can later support vehicle flow, cycling, public transport activity, weather, events, disruption records, and future edge-generated sensing outputs.
 
 Core research question:
 
-> How does Melbourne's urban activity change across time, location, weather, calendar context, and events — and how can these signals be translated into an interpretable smart infrastructure interface?
+> How do known urban conditions manifest differently across Melbourne's pedestrian sensor network, and where does observed activity depart from the expected city rhythm?
+
+Communication question:
+
+> How can those spatial, temporal, and evidential differences be communicated through a data-driven visual narrative without turning overlap into causal claims?
 
 ## Research Positioning
 
@@ -60,7 +64,7 @@ The system should be designed as an **Urban Signal Interpretation System** with 
 2. **Environmental Context** — weather and environmental comfort.
 3. **Calendar Rhythm** — weekday/weekend, holidays, terms, seasons, and institutional rhythms.
 4. **Event and Disruption Layer** — events, planned works, road closures, and manually reviewed anomalies.
-5. **Infrastructure Pressure Interpretation** — baseline deviation, anomaly strength, confidence, and explanatory cards.
+5. **Evidence and Uncertainty Interpretation** — baseline deviation, anomaly strength, reviewed overlap, confidence, and unresolved context.
 
 ## Key Metrics
 
@@ -77,14 +81,14 @@ The current project does not implement or claim a validated Urban Pulse Index.
 
 ## Visual Direction
 
-The key visual module is the **2.5D Urban Pulse Field**:
+The key visual thread is the **2.5D Urban Pulse Field**, beginning as a data-driven Hero and resolving into the analytical Explorer:
 
 - x/y: sensor location on a city plane
 - height/glow/ripple: activity intensity, pulse score, or anomaly strength
 - time: controlled by a time slider
 - context: explained through nearby interpretation panels
 
-The first version should use sensor-based 2.5D spikes and ripple effects. If a continuous surface is added later, it must be described as an interpolated field, not a directly observed city state.
+The first version should use sensor-based spikes, glow, ripple, and restrained transitions. Prefer accessible SVG, Canvas, and CSS motion; use WebGL only if a reviewed prototype proves that it materially improves the story. If a continuous surface is added later, it must be described as an interpolated field, not a directly observed city state.
 
 ## Current Project State
 
@@ -93,15 +97,16 @@ Completed:
 - reproducible analytical phases from source profiling through explanation-ready aggregation;
 - a 12-sensor representative mode with 4,647 episodes and 425 Pulses;
 - deterministic public UI data and independent validation;
-- an annual Explorer with spatial, temporal, filtering, Pulse, and sensor states;
-- evidence schemas, a review queue, 64 evidence facts, and 64 automatic matches.
+- an approved, responsive annual Explorer with spatial, temporal, filtering, Pulse, and sensor states;
+- Explorer lint, production-build, UI-data, accessibility-baseline, browser, and physical-display checks;
+- evidence schemas, a review queue, 64 evidence facts, and 64 reviewed matches covering 15 Pulses and one isolated episode.
 
 Not yet completed:
 
-- human review of the automatic matches;
-- an approved visual identity and responsive Explorer;
-- the narrative homepage and public methodology presentation;
-- browser, accessibility, and public-release acceptance.
+- research-result framing and selected-case narrative;
+- the complete Hero, narrative homepage, and public methodology visual system;
+- implementation and acceptance of the full website outside the Explorer;
+- site-wide public-release acceptance.
 
 ## Development Rules
 
@@ -115,4 +120,10 @@ Not yet completed:
 
 ## Next Steps
 
-See [docs/roadmap.md](docs/roadmap.md) for the ordered milestones, ownership, and acceptance gates.
+1. Frame the research result around contrasting spatial and temporal responses, not the predictability of holidays, weather, or events.
+2. Select and approve evidence-backed cases, including ambiguity and unresolved context.
+3. Audit Figma against the implemented site and evaluate GitHub dynamic-art skills before adopting one.
+4. Design and approve the complete Hero, narrative flow, methodology, motion states, and responsive states in Figma.
+5. Implement the approved vertical slice, then the full narrative website and release checks.
+
+See [docs/roadmap.md](docs/roadmap.md) for the source-of-truth workflow, ownership, and acceptance gates.

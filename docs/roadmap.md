@@ -2,7 +2,7 @@
 
 ## Goal
 
-Deliver Melbourne Urban Pulse as an English-language research case study for research-degree applications. There is no fixed deadline; work proceeds milestone by milestone, with scope held to the smallest credible first release.
+Deliver Melbourne Urban Pulse as a complete English-language research case-study website for research-degree applications. The final experience must combine a data-driven Hero, an evidence-backed narrative, transparent methodology, selected cases, and the analytical Explorer. The project should show how known urban conditions produce different spatial and temporal signatures, rather than presenting the existence of holidays, weather, or events as the result.
 
 ## Current baseline
 
@@ -11,16 +11,44 @@ Completed:
 - reproducible analytical phases from source profiling through explanation-ready aggregation;
 - 12-sensor representative mode with 4,647 episodes and 425 Pulses;
 - deterministic UI data v1 and independent validation;
-- working annual Explorer with spatial, temporal, filter, Pulse, and sensor states;
+- an approved annual Explorer visual system with spatial, temporal, filter, Pulse, and sensor states;
+- responsive Explorer behaviour, accessible interaction semantics, and browser acceptance;
+- 64 reviewed evidence matches covering 15 Pulses and one isolated episode;
 - initial Figma workspace and Annual Explorer capture.
 
 Still required:
 
-- human review of automatic evidence matches;
-- an approved visual system and complete Explorer state designs;
-- narrative homepage and methodology presentation;
-- responsive, accessibility, and browser acceptance;
+- research-result framing and selected-case narrative;
+- a complete Figma visual and motion system for the Hero, narrative, methodology, and responsive states;
+- implementation and acceptance of the full website outside the Explorer;
 - public-release and research-application handoff material.
+
+## Working workflow
+
+The remaining work follows this order. A later stage does not begin until the previous gate is approved.
+
+1. **Result framing** — compare reviewed cases by spatial scope, direction, duration, evidence combination, ambiguity, and departure from expectation.
+2. **Case selection** — choose a small contrasting set that includes an unexpected spatial pattern, a contrasting response, an ambiguous multi-factor case, and unresolved context where evidence permits.
+3. **Figma-to-code audit** — identify every missing page, section, responsive state, visual asset, and motion state; the existing Explorer is not treated as the complete website.
+4. **Dynamic-art skill review** — search GitHub, inspect source, dependencies, licence, maintenance, and security, then present candidates before installing or adopting one. Figma defines composition and motion intent; the selected skill may assist implementation but does not replace design approval.
+5. **Full visual design** — complete and review the Hero, narrative chapters, selected cases, methodology, Explorer transition, mobile layouts, loading, reduced-motion, and fallback states in Figma.
+6. **Vertical-slice implementation** — implement the Hero, one selected case, and the transition into methodology/Explorer before expanding the full site.
+7. **Full implementation and acceptance** — finish the narrative site, verify claims against project data, and run responsive, accessibility, performance, browser, and physical-display checks.
+
+Assistant responsibilities:
+
+- maintain the roadmap and evidence boundary;
+- synthesise the result matrix and draft claims from verified project outputs;
+- audit Figma and code, research candidate skills, and disclose trade-offs before adoption;
+- design, implement, test, and document the approved site;
+- never promote overlap into causation or install a third-party skill without review.
+
+Researcher responsibilities:
+
+- approve the research question, selected cases, visual direction, and final claims;
+- choose whether an evaluated dynamic-art skill may be installed and used;
+- provide identity, academic direction, contact, acknowledgement, and motivation content;
+- inspect the complete Hero and page flow in Figma and the physical browser before each implementation gate passes.
 
 ## Milestone 1 - Foundation
 
@@ -39,6 +67,8 @@ Gate: documentation and current checks agree with the tracked implementation.
 
 ## Milestone 2 - Explorer visual system
 
+Status: gate passed. The researcher approved the desktop Explorer direction; paid-team Figma library handoff remains deferred.
+
 Assistant:
 
 - audit the current Explorer and existing Figma workspace;
@@ -55,6 +85,8 @@ Researcher:
 Gate: the researcher explicitly approves the desktop Explorer direction.
 
 ## Milestone 3 - Explorer implementation
+
+Status: complete. Core journeys passed automated checks, browser acceptance, and researcher physical-display acceptance.
 
 Assistant:
 
@@ -73,6 +105,8 @@ Gate: core Explorer journeys pass automated and researcher acceptance.
 
 ## Milestone 4 - Human evidence review
 
+Status: complete. The original evidence researcher confirmed all 64 links; downstream explanation-ready and UI data were regenerated and validated.
+
 Assistant:
 
 - generate a review-friendly workbook from the current evidence matches;
@@ -88,22 +122,59 @@ Researcher:
 
 Gate: reviewed and automatic evidence are visibly and structurally distinct.
 
-## Milestone 5 - Narrative case study
+## Milestone 5 - Research result framing
+
+Status: complete. The researcher approved the result thesis, four core cases, non-causal claim boundary, and narrative order documented in [result-framing.md](result-framing.md).
 
 Assistant:
 
-- design and implement the English homepage, methodology, data sources, limitations, selected cases, and Explorer entry point;
-- write draft copy from verified project evidence and researcher-provided personal context;
-- connect the narrative to the Explorer without duplicating the analytical interface.
+- build a comparison matrix for the reviewed cases using spatial scope, direction, duration, evidence combination, confidence, and ambiguity;
+- draft a result thesis that explains variation in urban response rather than rediscovering predictable calendar or weather conditions;
+- propose three to four contrasting cases and document what each case can and cannot support.
+
+Researcher:
+
+- challenge the usefulness of the proposed result;
+- approve the research question, claim boundaries, and selected cases.
+
+Gate: the result remains interesting after removing the trivial statement that holidays, weather, and events are predictable.
+
+## Milestone 6 - Full-site visual and motion design
+
+Status: in progress. The code-side gap audit, connected Figma file audit, and GitHub Skill review are documented in [milestone-6-audit.md](milestone-6-audit.md). The approved `motion-ref` Skill is installed. The connected Figma file currently contains only its cover, so the missing website frames must now be designed.
+
+Assistant:
+
+- audit the implemented pages against all Figma pages and document the missing Hero and site logic;
+- search and vet GitHub dynamic-art skills, then present a shortlist before installation;
+- complete the English Hero, narrative chapters, selected-case layouts, methodology, Explorer entry, mobile layouts, motion, reduced-motion, loading, and fallback states in Figma;
+- prototype the data-driven Urban Pulse Field with the lightest suitable browser technology.
+
+Researcher:
+
+- approve or reject the skill shortlist;
+- review the complete desktop and mobile page flow, not only the Explorer;
+- approve the Hero art direction and motion behaviour before implementation.
+
+Gate: the researcher has seen and approved the complete Hero and full-site logic in Figma, plus one feasible motion prototype.
+
+## Milestone 7 - Narrative site implementation
+
+Assistant:
+
+- implement the approved Hero and narrative system;
+- connect selected cases, methodology, data sources, limitations, and the Explorer without duplicating the analytical interface;
+- write draft English copy from verified project evidence and researcher-provided personal context;
+- verify responsive behaviour, reduced motion, keyboard use, performance, and browser states.
 
 Researcher:
 
 - provide name, academic background, intended research direction, contact links, acknowledgements, and a short personal motivation;
-- approve the final wording and selected cases.
+- approve the final wording, selected cases, visual result, and physical-display behaviour.
 
 Gate: an admissions reviewer can understand the question, method, contribution, limitations, and researcher's role without opening the repository.
 
-## Milestone 6 - Release
+## Milestone 8 - Release
 
 Assistant:
 
@@ -126,7 +197,8 @@ Use Shopify Editions Winter '26 as a mood reference, not a layout template:
 - borrow editorial scale, chapter navigation, deep atmospheric backgrounds, fine technical grids, and deliberate pacing;
 - translate Renaissance imagery into Melbourne-specific research material such as archival map texture, restrained civic colour, sensor geometry, and temporal traces;
 - keep analytical controls calm, readable, and accessible;
-- avoid copied assets, novelty interaction, heavy WebGL, and animation that competes with evidence.
+- prefer accessible SVG, Canvas, and CSS motion; use WebGL only if a reviewed prototype proves it materially improves the story;
+- avoid copied assets, novelty interaction, and animation that competes with evidence.
 
 ## Deferred on purpose
 
