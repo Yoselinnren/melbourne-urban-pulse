@@ -4,6 +4,8 @@
 
 Deliver Melbourne Urban Pulse as a complete English-language research case-study website for research-degree applications. The final experience must combine a data-driven Hero, an evidence-backed narrative, transparent methodology, selected cases, and the analytical Explorer. The project should show how known urban conditions produce different spatial and temporal signatures, rather than presenting the existence of holidays, weather, or events as the result.
 
+The final portfolio architecture is intentionally broader than this repository: `yoreny.com` will open on the researcher's personal portfolio and CV, then link into the Melbourne Urban Pulse project Hero, research narrative, and Explorer. This project must not permanently occupy the domain root. The portfolio shell is reserved for a later implementation decision and is not part of Milestone 6.
+
 ## Current baseline
 
 Completed:
@@ -14,7 +16,8 @@ Completed:
 - an approved annual Explorer visual system with spatial, temporal, filter, Pulse, and sensor states;
 - responsive Explorer behaviour, accessible interaction semantics, and browser acceptance;
 - 64 reviewed evidence matches covering 15 Pulses and one isolated episode;
-- initial Figma workspace and Annual Explorer capture.
+- connected Figma workspace containing the project cover, Explorer design system and screens, and scaffolded narrative and methodology pages;
+- GitHub-to-Vercel deployment, custom-domain DNS, and SSL for `yoreny.com`, established early as release infrastructure.
 
 Still required:
 
@@ -141,7 +144,7 @@ Gate: the result remains interesting after removing the trivial statement that h
 
 ## Milestone 6 - Full-site visual and motion design
 
-Status: in progress. The code-side gap audit, connected Figma file audit, and GitHub Skill review are documented in [milestone-6-audit.md](milestone-6-audit.md). The approved `motion-ref` Skill is installed. The connected Figma file currently contains only its cover, so the missing website frames must now be designed.
+Status: complete and researcher-approved on 2026-08-11. The code-side gap audit, connected Figma file audit, and GitHub Skill review are documented in [milestone-6-audit.md](milestone-6-audit.md). The approved `motion-ref` Skill is installed. The Figma file contains the complete desktop narrative, complete mobile narrative, four reviewed-case chapters, method and limitation chapters, Explorer handoff, Hero default/loading/static/reduced-motion states, and motion implementation annotations. The completed review checklist and approval record are in [milestone-6-review.md](milestone-6-review.md).
 
 Assistant:
 
@@ -160,6 +163,8 @@ Gate: the researcher has seen and approved the complete Hero and full-site logic
 
 ## Milestone 7 - Narrative site implementation
 
+Status: complete and researcher-approved on 2026-08-11. The approved M6 desktop/mobile narrative is available at `/projects/melbourne-urban-pulse`; `/` is reserved as the personal portfolio/CV entry and `/explore` remains the analytical audit trail. The Hero loads the verified New Year Pulse payload with shape-accurate loading and deterministic static fallback states, while native CSS and IntersectionObserver implement the approved reveal, selected-sensor, offscreen/background pause, and reduced-motion behaviour without a new motion dependency. Lint, production build, 1440 px and 390 px responsive checks, and the portfolio → project → selected Explorer route handoff pass. Review evidence and researcher approval are recorded in [milestone-7-review.md](milestone-7-review.md).
+
 Assistant:
 
 - implement the approved Hero and narrative system;
@@ -176,6 +181,8 @@ Gate: an admissions reviewer can understand the question, method, contribution, 
 
 ## Milestone 8 - Release
 
+Status: infrastructure established early. GitHub deployment, Vercel production, Spaceship DNS, SSL, `yoreny.com`, and `www.yoreny.com` are connected; final content release and portfolio routing remain gated on Milestones 6 and 7.
+
 Assistant:
 
 - run final accessibility, performance, responsive, data-safety, and clean-build checks;
@@ -186,7 +193,7 @@ Researcher:
 
 - select and authorise hosting;
 - approve the public URL and final release;
-- later decide how the project sits beneath a personal portfolio and custom domain.
+- approve the eventual personal-portfolio entry and route handoff without making this project the permanent domain root.
 
 Gate: the public build is accurate, navigable, safe, and approved.
 
@@ -202,7 +209,7 @@ Use Shopify Editions Winter '26 as a mood reference, not a layout template:
 
 ## Deferred on purpose
 
-- personal portfolio shell and custom-domain architecture;
+- personal portfolio shell design and implementation; reserve the final route hierarchy as personal portfolio/CV → project Hero → research narrative → Explorer;
 - additional transport, cycling, or edge-sensing modes;
 - a continuous interpolated 2.5D surface;
 - causal explanation generation;

@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Melbourne Urban Pulse",
+  title: "Yoreny | Research Portfolio",
   description:
-    "A research-oriented urban data storytelling prototype for Melbourne smart infrastructure signals.",
+    "Research portfolio featuring Melbourne Urban Pulse, an inspectable urban data research project.",
 };
 
 export default function RootLayout({

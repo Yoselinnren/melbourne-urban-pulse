@@ -64,9 +64,9 @@ The methodology may be a dedicated route or an anchored chapter, but it must be 
 
 ## Figma gap audit status
 
-The connected Figma file `Melbourne Urban Pulse - UI Design` was inspected on 2026-08-10. It contains one top-level page, `00 - Cover`, and one 1440 x 900 frame, `Cover / Melbourne Urban Pulse` (`24:3`). No Annual Explorer, Hero, narrative, methodology, mobile, or motion-design frames are present in this file.
+The connected Figma file `Melbourne Urban Pulse - UI Design` was re-inspected through the file-context API on 2026-08-11. The lightweight metadata endpoint exposed only `00 - Cover`, but the document itself contains the Explorer design system, Explorer screens, a `02 - Narrative Homepage` page, and a `03 - Methodology + Archive` page. The narrative and methodology pages were structured as named sections and frames, but their final frames were empty dark shells rather than completed designs.
 
-The cover establishes useful shared tokens - the Explorer dark background, cyan research label, Geist typography, muted explanatory copy, and pale-yellow version marker - but it is a design-file cover rather than a website Hero. The Figma-to-code gap is therefore not a matter of missing implementation: the complete website screens still need to be designed.
+The Explorer pages establish reusable variables, Geist text styles, controls, spatial nodes, the annual ribbon, and complete desktop Explorer states. Those assets are the visual baseline for the site narrative. The M6 Figma package now contains a completed desktop Hero (`8:10`), ten-chapter desktop narrative (`8:44`), mobile Hero (`136:387`), ten-chapter mobile narrative (`136:388`), mobile Explorer handoff (`136:389`), four Hero states (`143:922`), and implementation-ready motion annotations (`143:1319`). Structural audits report no remaining placeholders, direct-text overlaps, or mobile out-of-bounds children. Researcher approval remains the final M6 gate.
 
 The Figma review must account for these nodes or equivalent frames:
 

@@ -1,6 +1,6 @@
 # Melbourne Urban Pulse - Project Context
 
-> Current direction: an English-only research portfolio project for research-degree applications. A future personal portfolio and custom domain may contain this project, but are outside the first release.
+> Current direction: an English-only research portfolio project for research-degree applications. The final route hierarchy is `yoreny.com` personal portfolio/CV → Melbourne Urban Pulse project Hero and narrative → Explorer. This repository delivers the project experience; the portfolio shell will be handled separately.
 
 ## Project Overview
 
@@ -100,13 +100,14 @@ Completed:
 - an approved, responsive annual Explorer with spatial, temporal, filtering, Pulse, and sensor states;
 - Explorer lint, production-build, UI-data, accessibility-baseline, browser, and physical-display checks;
 - evidence schemas, a review queue, 64 evidence facts, and 64 reviewed matches covering 15 Pulses and one isolated episode.
+- an approved research-result thesis and four contrasting, evidence-bounded case groups;
+- an approved full-site Figma visual and motion system;
+- a researcher-approved desktop/mobile narrative site with a data-driven Hero, method, limitations, Explorer handoff, loading, static fallback, and reduced-motion states.
 
 Not yet completed:
 
-- research-result framing and selected-case narrative;
-- the complete Hero, narrative homepage, and public methodology visual system;
-- implementation and acceptance of the full website outside the Explorer;
-- site-wide public-release acceptance.
+- final personal portfolio/CV identity content;
+- site-wide public-release acceptance and deployment of the approved final content.
 
 ## Development Rules
 
@@ -120,10 +121,8 @@ Not yet completed:
 
 ## Next Steps
 
-1. Frame the research result around contrasting spatial and temporal responses, not the predictability of holidays, weather, or events.
-2. Select and approve evidence-backed cases, including ambiguity and unresolved context.
-3. Audit Figma against the implemented site and evaluate GitHub dynamic-art skills before adopting one.
-4. Design and approve the complete Hero, narrative flow, methodology, motion states, and responsive states in Figma.
-5. Implement the approved vertical slice, then the full narrative website and release checks.
+1. Provide and integrate the personal portfolio/CV identity, academic direction, contact, acknowledgement, and motivation content.
+2. Run the final accessibility, performance, responsive, data-safety, and clean-build release checks.
+3. Approve and publish the final portfolio-to-project-to-Explorer route hierarchy.
 
 See [docs/roadmap.md](docs/roadmap.md) for the source-of-truth workflow, ownership, and acceptance gates.
