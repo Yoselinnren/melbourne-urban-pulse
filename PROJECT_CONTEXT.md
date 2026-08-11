@@ -103,10 +103,10 @@ Completed:
 - an approved research-result thesis and four contrasting, evidence-bounded case groups;
 - an approved full-site Figma visual and motion system;
 - a researcher-approved desktop/mobile narrative site with a data-driven Hero, method, limitations, Explorer handoff, loading, static fallback, and reduced-motion states.
+- a researcher-approved project-level public release at `https://www.yoreny.com`, with the entry, narrative, Explorer, selected-case links, and public UI data verified on 2026-08-12.
 
 Not yet completed:
 
-- project-level public-release acceptance and deployment of the approved final content;
 - final personal portfolio/CV identity content, explicitly deferred to a separate later phase.
 
 ## Development Rules
@@ -121,8 +121,7 @@ Not yet completed:
 
 ## Next Steps
 
-1. Run the final accessibility, performance, responsive, data-safety, and clean-build checks for the project narrative and Explorer.
-2. Approve and publish the project entry-to-narrative-to-Explorer route hierarchy.
-3. Design and integrate the personal portfolio/CV only when the researcher starts that separate phase.
+1. Monitor the published project and preserve the verified evidence boundary in future changes.
+2. Design and integrate the personal portfolio/CV only when the researcher starts that separate phase.
 
 See [docs/roadmap.md](docs/roadmap.md) for the source-of-truth workflow, ownership, and acceptance gates.

@@ -144,6 +144,5 @@ On this workstation, bare `python` may resolve to MSYS2. Create or repair `.venv
 
 ## Next Steps
 
-1. Review and approve the project-scoped release recorded in [Milestone 8](docs/milestone-8-review.md).
-2. Publish the approved entry-to-project-to-Explorer route hierarchy.
-3. Build the personal portfolio/CV later as a separate phase.
+1. Monitor the approved project release recorded in [Milestone 8](docs/milestone-8-review.md).
+2. Build the personal portfolio/CV later as a separate phase.

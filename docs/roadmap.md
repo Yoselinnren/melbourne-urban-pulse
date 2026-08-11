@@ -181,7 +181,7 @@ Gate: an admissions reviewer can understand the question, method, contribution, 
 
 ## Milestone 8 - Release
 
-Status: release checks complete; researcher approval and publication pending. GitHub deployment, Vercel production, Spaceship DNS, SSL, `yoreny.com`, and `www.yoreny.com` are connected. Milestones 6 and 7 are approved. The first release is project-scoped; personal portfolio/CV content is explicitly deferred and does not block release. Acceptance evidence is recorded in [milestone-8-review.md](milestone-8-review.md).
+Status: complete, researcher-approved, and published on 2026-08-12. GitHub `main`, Vercel production, Spaceship DNS, SSL, `yoreny.com`, and `www.yoreny.com` are connected and verified. The first release is project-scoped; personal portfolio/CV content is explicitly deferred to a separate phase. Acceptance and production evidence are recorded in [milestone-8-review.md](milestone-8-review.md).
 
 Assistant:
 

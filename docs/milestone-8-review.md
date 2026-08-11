@@ -28,6 +28,14 @@ Lighthouse also found an invalid `aria-label` on the narrative Pulse plot. The p
 
 Explorer's only weighted Lighthouse accessibility failure is target size on the 425 interactive marks in the annual timeline. Each mark retains a descriptive accessible name and keyboard selection semantics, but the dense year-scale view cannot provide 24 x 24 px pointer targets without overlapping adjacent Pulses and making selection ambiguous. A future zoomed or grouped timeline may remove this limitation; it is not expanded in this release because that would change the approved analytical interface.
 
-## Approval gate
+## Approval and publication
 
-Publication remains blocked until the researcher explicitly approves the project URL and final release. No push or production publication is part of this review record.
+The researcher explicitly approved publication on 2026-08-12. The approved commits were pushed to GitHub `main` and deployed through Vercel.
+
+Production verification passed:
+
+- `https://yoreny.com` redirects permanently to `https://www.yoreny.com` with HSTS enabled;
+- `/`, `/projects/melbourne-urban-pulse`, and `/explore` return HTTP 200 with the expected titles;
+- the narrative contains the released New Year case and the corrected Pulse-plot image role;
+- the public UI manifest returns HTTP 200 with data version `c4dcfd0022f903296c5f0d4f`, 64 human reviews, and zero pending-review Pulses;
+- the selected New Year Explorer route returns HTTP 200.
