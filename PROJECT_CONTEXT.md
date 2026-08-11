@@ -106,8 +106,8 @@ Completed:
 
 Not yet completed:
 
-- final personal portfolio/CV identity content;
-- site-wide public-release acceptance and deployment of the approved final content.
+- project-level public-release acceptance and deployment of the approved final content;
+- final personal portfolio/CV identity content, explicitly deferred to a separate later phase.
 
 ## Development Rules
 
@@ -121,8 +121,8 @@ Not yet completed:
 
 ## Next Steps
 
-1. Provide and integrate the personal portfolio/CV identity, academic direction, contact, acknowledgement, and motivation content.
-2. Run the final accessibility, performance, responsive, data-safety, and clean-build release checks.
-3. Approve and publish the final portfolio-to-project-to-Explorer route hierarchy.
+1. Run the final accessibility, performance, responsive, data-safety, and clean-build checks for the project narrative and Explorer.
+2. Approve and publish the project entry-to-narrative-to-Explorer route hierarchy.
+3. Design and integrate the personal portfolio/CV only when the researcher starts that separate phase.
 
 See [docs/roadmap.md](docs/roadmap.md) for the source-of-truth workflow, ownership, and acceptance gates.

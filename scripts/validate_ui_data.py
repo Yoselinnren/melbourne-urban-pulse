@@ -42,7 +42,7 @@ def main():
     if tree([p for p in payload_paths if p.startswith("pulses/") and p!="pulses/index.json"])!=m["outputDigests"]["pulseDetailTreeSha256"]: fail("Pulse tree digest mismatch")
     if tree([p for p in payload_paths if p.startswith("sensors/") and p!="sensors/index.json"])!=m["outputDigests"]["sensorDetailTreeSha256"]: fail("Sensor tree digest mismatch")
     c=m["recordCounts"]
-    exact={"sensorCount":12,"pulseCount":425,"sourceCandidateEpisodeCount":4647,"evidenceFactCount":64,"evidenceMatchCount":64,"humanReviewCount":0,"autoMatchedPendingReviewPulses":15,"outsideManualReviewScopePulses":410}
+    exact={"sensorCount":12,"pulseCount":425,"sourceCandidateEpisodeCount":4647,"evidenceFactCount":64,"evidenceMatchCount":64,"humanReviewCount":64,"autoMatchedPendingReviewPulses":0,"outsideManualReviewScopePulses":410}
     for k,v in exact.items():
         if c.get(k)!=v: fail(f"Expected {k}={v}, got {c.get(k)}")
     annual=docs["annual-overview.json"]; need(annual,["schemaVersion","dataVersion","sensorMode","studyPeriod","summary","monthly","processingVersions","limitations"],"annual")
@@ -92,7 +92,7 @@ def main():
             if u is not None and not (u.startswith("http://") or u.startswith("https://")): fail(f"Invalid URL {pid}")
         outside+=d["evidence"]["readiness"]=="not_in_manual_review_scope"
         size=(root/path).stat().st_size;pulse_sizes.append(size);max_pair=max(max_pair,(size,pid))
-    if reviewed!=0 or outside!=410: fail("Evidence review/readiness totals mismatch")
+    if pending!=0 or reviewed!=63 or outside!=410: fail("Evidence review/readiness totals mismatch")
     if len(all_episode_ids)!=c["pulseMemberEpisodeCount"] or len(all_episode_ids)>=4647: fail("Pulse member episode semantics mismatch")
     for sid in sensor_ids:
         d=docs.get(f"sensors/{sid}.json");need(d,["schemaVersion","dataVersion","sensorId","regularRhythm","pulseParticipation","mediaIds"],f"sensor {sid}")

@@ -65,7 +65,7 @@ export default function HeroPulseField() {
         <strong>New Year phase 01 · network-wide above baseline</strong>
         <small>01 JAN 2025 · 00:00–05:00 · 12/12 SENSORS · 6 HOURS</small>
       </div>
-      <div className="pulse-field__plot" aria-label="Twelve discrete sensor anomaly traces">
+      <div className="pulse-field__plot" role="img" aria-label="Twelve discrete sensor anomaly traces">
         <div className="pulse-field__grid" aria-hidden="true" />
         <div className="pulse-field__baseline" aria-hidden="true" />
         {state === "loading" ? (

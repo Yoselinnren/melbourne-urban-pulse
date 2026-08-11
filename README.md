@@ -144,8 +144,6 @@ On this workstation, bare `python` may resolve to MSYS2. Create or repair `.venv
 
 ## Next Steps
 
-1. Frame the research result and approve contrasting selected cases.
-2. Audit the Figma-to-code gap and evaluate GitHub dynamic-art skills.
-3. Design and approve the complete Hero, narrative flow, methodology, motion, and responsive states.
-4. Implement the approved narrative website and connect it to the Explorer.
-5. Run site-wide acceptance and prepare the first public research-portfolio release.
+1. Review and approve the project-scoped release recorded in [Milestone 8](docs/milestone-8-review.md).
+2. Publish the approved entry-to-project-to-Explorer route hierarchy.
+3. Build the personal portfolio/CV later as a separate phase.

@@ -4,7 +4,7 @@
 
 Deliver Melbourne Urban Pulse as a complete English-language research case-study website for research-degree applications. The final experience must combine a data-driven Hero, an evidence-backed narrative, transparent methodology, selected cases, and the analytical Explorer. The project should show how known urban conditions produce different spatial and temporal signatures, rather than presenting the existence of holidays, weather, or events as the result.
 
-The final portfolio architecture is intentionally broader than this repository: `yoreny.com` will open on the researcher's personal portfolio and CV, then link into the Melbourne Urban Pulse project Hero, research narrative, and Explorer. This project must not permanently occupy the domain root. The portfolio shell is reserved for a later implementation decision and is not part of Milestone 6.
+The final portfolio architecture is intentionally broader than this repository: a later personal portfolio and CV will link into the Melbourne Urban Pulse project Hero, research narrative, and Explorer. The portfolio shell is deferred by researcher decision and is not a blocker for the project's first public release; `/` may remain the current lightweight project entry until that separate phase begins.
 
 ## Current baseline
 
@@ -181,7 +181,7 @@ Gate: an admissions reviewer can understand the question, method, contribution, 
 
 ## Milestone 8 - Release
 
-Status: infrastructure established early. GitHub deployment, Vercel production, Spaceship DNS, SSL, `yoreny.com`, and `www.yoreny.com` are connected; final content release and portfolio routing remain gated on Milestones 6 and 7.
+Status: release checks complete; researcher approval and publication pending. GitHub deployment, Vercel production, Spaceship DNS, SSL, `yoreny.com`, and `www.yoreny.com` are connected. Milestones 6 and 7 are approved. The first release is project-scoped; personal portfolio/CV content is explicitly deferred and does not block release. Acceptance evidence is recorded in [milestone-8-review.md](milestone-8-review.md).
 
 Assistant:
 
@@ -193,7 +193,7 @@ Researcher:
 
 - select and authorise hosting;
 - approve the public URL and final release;
-- approve the eventual personal-portfolio entry and route handoff without making this project the permanent domain root.
+- approve the project URL and final release; the eventual personal-portfolio entry and route handoff remain a separate later phase.
 
 Gate: the public build is accurate, navigable, safe, and approved.
 
