@@ -85,10 +85,10 @@
 .claim-boundary { max-width: 520px; margin-bottom: 24px; padding: 11px 12px; border-left: 2px solid var(--mup-below); background: #111f25; color: #cbd9de; font-size: 12px; }
 .hero-actions { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
 .study-metrics { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 520px; margin: 0; border-top: 1px solid var(--mup-line); border-bottom: 1px solid var(--mup-line); }
-.study-metrics div { display: flex; flex-direction: column-reverse; gap: 4px; min-height: 76px; padding: 13px 18px 12px 0; }
+.study-metrics div { display: flex; flex-direction: column; gap: 4px; min-height: 76px; padding: 13px 18px 12px 0; }
 .study-metrics div + div { padding-left: 18px; border-left: 1px solid var(--mup-line); }
 .study-metrics dt { color: var(--mup-muted); font: 500 9px var(--font-geist-mono); letter-spacing: .08em; text-transform: uppercase; }
-.study-metrics dd { margin: 0; font: 600 26px var(--font-geist-sans); }
+.study-metrics dd { order: -1; margin: 0; font: 600 26px var(--font-geist-sans); }
 .scroll-cue { position: absolute; right: 4.45vw; bottom: 22px; left: 4.45vw; display: flex; justify-content: space-between; color: var(--mup-muted); font: 500 9px var(--font-geist-mono); letter-spacing: .1em; }
 
 .pulse-field { align-self: stretch; display: grid; grid-template-rows: auto minmax(300px, 1fr) auto; min-height: 660px; padding: 22px 24px 18px; overflow: hidden; border: 1px solid var(--mup-line); border-radius: 2px; background: var(--mup-panel-2); }
