@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "Yoreny | Research Portfolio",
   description:
     "Research portfolio featuring Melbourne Urban Pulse, an inspectable urban data research project.",
+  icons: {
+    icon: "/brand/yoreny-mark.png",
+    apple: "/brand/yoreny-mark.png",
+  },
 };
 
 export default function RootLayout({
