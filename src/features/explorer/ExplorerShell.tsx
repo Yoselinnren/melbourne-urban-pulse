@@ -14,7 +14,7 @@ import TemporalRibbon from "./TemporalRibbon";
 import ContextInspector from "./ContextInspector";
 import ExplorerStatus from "./ExplorerStatus";
 
-const syncError="UI data files are out of sync. Regenerate or redeploy the UI dataset.";
+const syncError="The published UI data files are out of sync. Regenerate or redeploy the dataset.";
 
 export default function ExplorerShell(){
   const router=useRouter(),pathname=usePathname(),params=useSearchParams();
@@ -52,8 +52,8 @@ export default function ExplorerShell(){
     <ExplorerHeader state={state} count={filtered.length} currentContext={currentContext} onFilters={()=>dispatch({type:"set",key:"filtersOpen",value:!state.filtersOpen})} onClear={()=>navigate({selectedPulseId:null,selectedSensorId:null})} onReset={()=>navigate({month:null,direction:null,scopes:[],evidenceReadiness:[]},true)}/>
     <ExplorerFilters state={state} commit={commitFilters}/>
     <div className="sr-live" aria-live="polite">{state.notice??`${filtered.length} Pulses match current filters.`}</div>
-    {state.initialDataStatus==="loading"&&<main className="explorer-stage skeleton-stage" aria-label="Loading Annual Explorer"><div className="upper"><div className="skeleton-block"><ExplorerStatus>Loading spatial data…</ExplorerStatus></div><div className="skeleton-block"><ExplorerStatus>Loading annual summary…</ExplorerStatus></div></div><div className="skeleton-block"><ExplorerStatus>Loading Pulse timeline…</ExplorerStatus></div></main>}
-    {state.initialDataStatus==="error"&&<main className="explorer-stage loading-stage"><ExplorerStatus kind="error" onRetry={()=>{setInitialError(null);dispatch({type:"status",key:"initialDataStatus",value:"loading"});setRetry(x=>x+1)}}>{initialError}.</ExplorerStatus><Link href="/projects/melbourne-urban-pulse">Return to Project</Link></main>}
+    {state.initialDataStatus==="loading"&&<main className="explorer-stage skeleton-stage" aria-label="Loading Annual Explorer"><div className="upper"><div className="skeleton-block"><ExplorerStatus>Loading sensor positions…</ExplorerStatus></div><div className="skeleton-block"><ExplorerStatus>Loading annual summary…</ExplorerStatus></div></div><div className="skeleton-block"><ExplorerStatus>Loading Pulse timeline…</ExplorerStatus></div></main>}
+    {state.initialDataStatus==="error"&&<main className="explorer-stage loading-stage"><ExplorerStatus kind="error" onRetry={()=>{setInitialError(null);dispatch({type:"status",key:"initialDataStatus",value:"loading"});setRetry(x=>x+1)}}>{initialError}.</ExplorerStatus><Link href="/projects/melbourne-urban-pulse">Return to project</Link></main>}
     {data&&state.initialDataStatus==="ready"&&<main className="explorer-stage"><div className="upper"><SpatialCanvas sensors={data.sensors.items} pulses={filtered} selectedPulse={preview} selectedSensor={state.selectedSensorId} hoveredSensor={state.hoveredSensorId} onHover={id=>dispatch({type:"set",key:"hoveredSensorId",value:id})} onSelect={id=>navigate({selectedSensorId:id})}/><ContextInspector annual={data.annual} filtered={filtered} filters={state} pulse={pulse} sensor={sensor} pulseDetail={pulseDetail} sensorDetail={sensorDetail} pulseStatus={state.pulseDetailStatus} sensorStatus={state.sensorDetailStatus} pulseError={pulseError} sensorError={sensorError} onCloseSensor={()=>navigate({selectedSensorId:null})} onRetryPulse={retryPulse} onRetrySensor={retrySensor}/></div><TemporalRibbon pulses={filtered} selected={state.selectedPulseId} hovered={state.hoveredPulseId} onHover={id=>dispatch({type:"set",key:"hoveredPulseId",value:id})} onSelect={id=>navigate({selectedPulseId:id,selectedSensorId:null})}/></main>}
   </div>;
 }

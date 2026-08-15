@@ -1,3 +1,3 @@
 import type { Metadata } from "next";import { Suspense } from "react";import ExplorerShell from "@/features/explorer/ExplorerShell";import "./explore.css";import "./explore-design-sync.css";
-export const metadata:Metadata={title:"Explore 2025 | Melbourne Urban Pulse",description:"Explore Melbourne pedestrian Pulses across twelve representative sensors."};
+export const metadata:Metadata={title:"Explore 2025 | Melbourne Urban Pulse",description:"Inspect 425 rule-defined Pulses across 12 central-Melbourne research sensors, including direction, duration, hourly participation and evidence-review status."};
 export default function ExplorePage(){return <Suspense fallback={<main className="explorer-loading">Loading Annual Explorer…</main>}><ExplorerShell/></Suspense>}

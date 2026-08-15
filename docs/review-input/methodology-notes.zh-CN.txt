@@ -1,0 +1,541 @@
+From Hourly Footfall to Urban Pulses: Building an Interpretable Framework for Urban Rhythm Analysis
+
+1. Why Study Urban Rhythms?
+
+Cities do not move at a constant rate. Their streets, transport nodes, commercial areas and public spaces repeatedly accelerate and slow down across the day, the week and the year. Morning commuting, lunchtime movement, evening entertainment, weekends, public holidays, major events and adverse weather can all alter how people occupy the city. These changes form what can broadly be described as urban rhythms: recurring patterns of activity together with moments when observed activity departs from those patterns.
+
+Pedestrian sensor data provides one way to study these rhythms at high temporal resolution. However, a raw pedestrian count is difficult to interpret in isolation. A count of 2,000 observations may be unusually high at one location but completely ordinary at another. Even at the same location, 2,000 observations may mean something very different at 8:00 on a weekday compared with 2:00 on a Saturday morning.
+
+For this reason, the central question of this project is not simply whether pedestrian activity is high or low. Instead, it asks:
+
+How different is the observed activity from what is normally seen at this location, on this type of day, at this hour?
+
+This distinction changes the project from a simple footfall dashboard into an exploratory urban sensing framework. The objective is to construct a transparent reference for “usual” activity, identify substantial departures from that reference, determine whether those departures persist through time, and then examine whether similar changes appear across multiple locations.
+
+The result is a layered analytical process. Individual hourly observations are first compared with location-specific baselines. Consecutive deviations at one sensor are then grouped into Episodes. Simultaneous Episodes across several sensors can subsequently form a Pulse. External evidence such as weather records, public holidays, major events and transport information is introduced only after these signals have been detected.
+
+This order is important. The project is designed to begin with the sensor signal rather than with a predetermined narrative. It therefore does not start by selecting a well-known event and searching for a matching increase or decrease in pedestrian counts. Instead, it first detects departures according to fixed rules and then asks what contextual information, if any, overlaps with them.
+
+The framework is exploratory rather than causal. Its purpose is to make temporal and cross-location deviations visible, reproducible and inspectable. It does not attempt to establish that a particular event caused a particular change in pedestrian activity. This separation between detection and explanation is one of the central methodological principles of the project.
+
+The current implementation should therefore be understood as a v1 analytical framework: sufficiently structured to produce reproducible signals, while deliberately retaining room for more detailed modelling of seasonality, spatial relationships, threshold calibration and causal mechanisms in later research.
+
+2. Why These 12 Sensors?
+
+The raw 2025 dataset contains observations from 102 pedestrian sensors. Using every sensor would maximize geographical coverage, but it would not necessarily produce the clearest analytical network. Sensors differ in data availability, operating continuity, location and observation quality. A network containing many irregular or incomplete time series could make cross-location comparison more difficult to interpret.
+
+The project therefore begins with a coverage audit.
+
+Among the 102 sensors that recorded observations during 2025, 30 met a near-complete coverage criterion and 67 achieved at least 95 percent coverage. From this higher-coverage pool, 12 sensors located in central Melbourne were selected for the main study network.
+
+The selection is purposive rather than random.
+
+The objective is to create a compact central-city network that combines strong temporal coverage with a manageable number of locations for hourly inspection, comparison and interactive visualisation. The 12 sensors are therefore research sensors selected for the purposes of this analytical system.
+
+This distinction matters for interpretation.
+
+The network is not intended to constitute a statistically representative sample of the entire City of Melbourne, metropolitan Melbourne, suburban environments, every street type or the complete population of pedestrian sensors. Consequently, results from the network should not automatically be generalized to the whole city.
+
+The term “representative sensors” can be convenient in interface design, but it requires care. In this project, “representative” would mean that the sensors form a useful set of study locations for observing different parts of the selected central-city network. It would not mean statistical representativeness in a survey-sampling sense.
+
+A more precise description is therefore:
+
+12 purposively selected central-Melbourne research sensors with near-complete data coverage.
+
+This narrower formulation is analytically useful rather than restrictive. It establishes exactly what population the project is observing. The study asks what can be learned from this defined network, rather than treating twelve points as a proxy for every urban environment in Melbourne.
+
+A later extension could examine whether a larger network, stratified location selection, precinct-based sampling or explicit spatial coverage criteria changes the resulting patterns. Such work would extend the geographical scope of the framework rather than alter the purpose of the current study network.
+
+3. How the Raw Data Becomes an Hourly Panel
+
+Once the research sensors are defined, the next task is to create a consistent temporal structure.
+
+The analysis operates at hourly resolution. Using nominal local-time hourly keys, 2025 contains 8,760 hourly positions. Across 12 sensors, this produces:
+
+8,760 hours × 12 sensors = 105,120 sensor-hours.
+
+The completed analytical panel contains all 105,120 sensor-hour positions.
+
+Of these, 105,104 contain observations and 16 are missing.
+
+Missing values are retained as null rather than converted to zero.
+
+This is a small technical decision with an important analytical consequence. A zero and a missing observation describe fundamentally different states. Zero means that the measurement system produced a valid observation indicating no recorded pedestrian count during that period. Null means that a reliable observation is unavailable.
+
+Replacing a missing observation with zero would therefore create an artificial low-activity signal. In a deviation-detection system, this could incorrectly transform a data-availability problem into an apparent urban event.
+
+The hourly panel is the foundation on which the rest of the analytical framework operates. Every sensor is evaluated at comparable hourly positions, while missingness remains explicit.
+
+There is one temporal simplification that is important to document. The panel is constructed using 8,760 nominal local-hour keys. When daylight saving time ends and a local clock hour occurs twice, the repeated local hour is not represented as an additional independent row.
+
+For the present application, this model is suitable for annual exploration and interactive comparison. It is not intended to be the most rigorous possible representation of ambiguous local timestamps around daylight-saving transitions. A future time-series implementation could preserve timezone-aware timestamps, UTC correspondences and duplicated local-hour identities explicitly.
+
+The current design therefore prioritizes a consistent annual analytical grid while making the daylight-saving treatment visible as part of the methodological definition.
+
+4. What Does “Normal” Mean for a Location?
+
+Detecting a deviation requires something to deviate from.
+
+A city-wide average would not provide a useful reference because locations operate at very different activity levels. A single daily average would also be insufficient because pedestrian activity has strong hourly and weekly structure.
+
+The project therefore defines normality locally in both space and time.
+
+Each observation is compared against a baseline defined by:
+
+sensor ID × day of week × hour of day.
+
+For example, observations from one sensor at 8:00 on Mondays are compared with other eligible observations from the same sensor at 8:00 on Mondays. They are not directly compared with Saturday evenings, other sensors or other hours.
+
+With 12 sensors, seven weekday categories and 24 hourly categories, the framework contains:
+
+12 × 7 × 24 = 2,016 baseline groups.
+
+These groups provide the reference distributions used for scoring.
+
+Not every available observation is automatically considered suitable for constructing “usual” behaviour. The baseline is intended to approximate recurring pedestrian conditions, so several contextual conditions are excluded from baseline construction.
+
+At present, 85,281 observations satisfy the baseline eligibility rules, while 19,839 are excluded.
+
+Automatic exclusions include missing or low-confidence observations, public holidays, daylight-saving transitions and defined weather disturbances.
+
+The weather disturbance rule currently excludes baseline observations when:
+
+rain > 0
+
+or
+
+wind_speed_10m >= 30.
+
+School holidays are recorded as contextual information but are not excluded solely because they occur during a school-holiday period.
+
+This is a deliberate modelling policy. “Normal” in the current framework should therefore not be interpreted as an abstract event-free city. It is more accurately described as the usual distribution remaining after a defined set of calendar, measurement and weather filters.
+
+At the time of the current baseline build, no manually curated event-exclusion records were loaded into the baseline construction process. As a result, recurring or major events may still contribute observations to some reference groups.
+
+This does not prevent the baseline from functioning as a reproducible reference. It instead defines what kind of reference it currently is: a calendar- and weather-filtered empirical baseline rather than a fully event-purged counterfactual.
+
+The weather information also represents a city-scale environmental background rather than sensor-specific microclimate measurements. Local shelter, street geometry or highly localized rainfall conditions are not modelled individually.
+
+These choices are useful places for future methodological refinement. Seasonal baselines, event-aware exclusions, local weather integration or hierarchical reference models could all produce alternative definitions of “normal”. The current version establishes a clear and reproducible starting definition against which these future models could be compared.
+
+5. Why Use the Median and MAD?
+
+Once baseline groups have been created, the system needs to summarize their typical level and typical variability.
+
+For each of the 2,016 baseline groups, the current pipeline stores the sample size, median, mean, 5th percentile, 25th percentile, 75th percentile, 95th percentile, 99th percentile, interquartile range and raw median absolute deviation.
+
+The median is the primary measure of central tendency.
+
+If the baseline observations for a group are x₁, x₂, ..., xₙ, the median m describes the middle of that empirical distribution. Compared with the mean, the median is less affected by unusually large or small values.
+
+This property is useful in pedestrian data. Urban activity can contain occasional very large counts, and a baseline method should not allow a small number of extreme observations to move the reference point excessively.
+
+Variability is primarily measured using the Median Absolute Deviation, or MAD.
+
+For a baseline median m:
+
+MAD = median(|xᵢ - m|).
+
+The MAD asks how far observations typically lie from the median. Like the median itself, it is resistant to a limited number of extreme values.
+
+For the purposes of exploratory deviation detection, this combination has an intuitive interpretation. The median describes what is typical for that sensor-day-hour combination, while MAD describes its usual local spread.
+
+The current score for an observation x is:
+
+score = (x - m) / MAD.
+
+The signed numerator preserves direction. Positive values indicate above-baseline activity and negative values indicate below-baseline activity.
+
+The magnitude describes how large that departure is relative to the raw MAD of the corresponding baseline group.
+
+The field is currently named robust_z_score in the data model, but it should not be interpreted as an ordinary probabilistic z-score. In particular, the implementation uses the raw MAD and does not multiply it by a normal-distribution consistency constant. Therefore, a score of 3, 5 or 10 does not correspond to a fixed tail probability in the way a conventional standard-normal interpretation might imply.
+
+A more exact description is:
+
+the number of raw baseline MADs by which the observation differs from the baseline median.
+
+If MAD is zero or unavailable, the implementation allows the interquartile range to act as a fallback scale. In the currently published data, this fallback is not required.
+
+The interpretation of very large scores also requires scale awareness. Suppose one sensor-day-hour group is extremely stable and has a very small MAD. A moderately large absolute change can then produce a very large relative score. This does not mean the change necessarily represents a correspondingly large social, economic or urban effect.
+
+The score measures deviation relative to the normal variability of that particular location and time combination.
+
+It does not directly measure total pedestrian volume, number of unique people, social importance, causal impact or event magnitude.
+
+This distinction is especially important when presenting extreme scores. A large score means that an observation is unusual relative to its own local empirical reference.
+
+Baseline confidence is handled separately from deviation magnitude. Confidence is currently determined only by the number of eligible observations in each baseline group.
+
+Groups with at least 40 observations are labelled high confidence. Groups with 30 to 39 observations are medium confidence. Groups with 15 to 29 observations are low confidence, and groups below 15 are insufficient.
+
+Across the 2,016 baseline groups, 1,584 are classified as high confidence and 432 as medium confidence. None are currently classified as low or insufficient.
+
+Here, confidence means sample sufficiency for constructing the empirical reference. It does not imply a formal statistical confidence level, guarantee that the baseline is correct, or certify that a detected deviation has been externally validated.
+
+Future versions could extend this concept by examining seasonal stability, dispersion uncertainty, sensor reliability or out-of-sample baseline performance. The current sample-count definition provides a simple and transparent first layer.
+
+6. How Does an Hour Become an Episode?
+
+After each eligible hourly observation has been compared with its baseline, the system assigns an intensity category according to the absolute score.
+
+Scores below 1 are classified as near regular.
+
+Scores from 1 to below 2 are mild.
+
+Scores from 2 to below 3 are moderate.
+
+Scores from 3 to below 5 are strong.
+
+Scores of 5 or greater are extreme.
+
+Not every scored hour enters the higher-level detection process.
+
+For an hour to become review-ready, two conditions must be satisfied.
+
+First, the underlying baseline group must have high confidence.
+
+Second, the absolute deviation score must be at least 3, placing the observation in the strong or extreme range.
+
+Review-ready hours are then connected through time at each individual sensor.
+
+An Episode is defined as a consecutive sequence of review-ready hours at the same sensor that share the same direction of deviation and are strictly adjacent in hourly time.
+
+This means that a positive deviation followed by another positive deviation one hour later can belong to the same Episode. A temporal gap ends the Episode. A change from above-baseline to below-baseline activity also ends the Episode.
+
+The rule intentionally does not bridge missing intervals or combine opposite directions.
+
+Using these definitions, the current dataset contains 4,647 Episodes.
+
+Of these, 3,107 contain only one hour, while 1,540 contain multiple hours. The longest detected Episode lasts 17 hours.
+
+An Episode should therefore be understood as a rule-defined candidate deviation segment.
+
+It is not automatically a confirmed urban event.
+
+This terminology preserves the distinction between what the sensor data demonstrates directly and what later contextual interpretation may suggest.
+
+The episode layer is important because an isolated unusual observation and a sustained six-hour departure represent different temporal structures. By grouping consecutive hours without yet assigning a cause, the framework retains that structure for later analysis.
+
+7. How Do Multiple Locations Form a Pulse?
+
+Episodes describe temporal continuity at one location. The next layer asks whether multiple locations display strong deviations in the same direction at the same time.
+
+For each hour, the system counts how many study sensors are currently participating in review-ready Episodes above baseline and how many are participating below baseline.
+
+A Pulse requires at least three simultaneously active sensors in the same direction for every hour included in the Pulse.
+
+Eligible consecutive hours are then joined if they are strictly adjacent and maintain the same direction.
+
+Under the current v1 rules, this process produces 425 Pulses.
+
+Of these, 256 are above-baseline Pulses and 169 are below-baseline Pulses.
+
+Pulse scope is classified using the maximum number of simultaneously active sensors observed at any hour during the Pulse.
+
+A maximum of three to four simultaneous sensors is classified as localized.
+
+A maximum of five to seven is classified as broad.
+
+A maximum of eight to twelve is classified as network-wide.
+
+Using this definition, the current data contains 263 localized Pulses, 106 broad Pulses and 56 network-wide Pulses.
+
+The word “maximum” is essential.
+
+If a Pulse is classified as network-wide, this means that at least one hour during the Pulse reached between eight and twelve simultaneous active sensors. It does not imply that eight or more sensors were simultaneously active during every hour of the Pulse.
+
+Similarly, the union of all sensors that participated at any point during a Pulse is different from the number active at each individual hour.
+
+The interface therefore benefits from distinguishing at least three concepts: peak simultaneous participation, hourly participation and the union of participating sensors across the full Pulse window.
+
+The current Pulse model is cross-location and temporally coordinated, but it does not yet perform explicit spatial clustering.
+
+Sensor coordinates are used for geographical display. The grouping algorithm itself does not currently use pairwise distance, street adjacency, precinct membership, road topology or spatial-connectivity algorithms.
+
+The most precise interpretation is therefore that a Pulse represents same-direction temporal co-occurrence across a geographically located sensor network.
+
+This already captures an important layer of urban structure: a departure appearing at several locations at approximately the same time is analytically different from a departure confined to one site.
+
+Future research could add explicit spatial topology to distinguish, for example, contiguous precinct-level clusters from geographically dispersed network-wide co-movement. Such an extension would refine the spatial interpretation of Pulse without changing the current co-occurrence logic that provides its foundation.
+
+8. How Are the 425 Pulses Produced?
+
+The number 425 is a result of the analytical definition, not a naturally given count of events waiting to be discovered.
+
+It emerges from a sequence of explicit choices:
+
+12 purposively selected sensors,
+
+sensor × day-of-week × hour baselines,
+
+high-confidence baseline groups,
+
+an absolute score threshold of at least 3,
+
+same-direction consecutive Episodes,
+
+and at least three simultaneously active sensors per Pulse hour.
+
+Under those definitions, the system detects 425 cross-sensor Pulses.
+
+This is why the most accurate public formulation is:
+
+Under the v1 sensor scope, baseline and threshold definitions, 425 cross-sensor Pulses were detected.
+
+It would be substantially stronger, and less precise, to state that Melbourne objectively experienced exactly 425 urban Pulses in 2025.
+
+The count is threshold-dependent.
+
+This can be demonstrated directly by changing the minimum number of simultaneously active sensors.
+
+With a minimum of two sensors, 1,625 hours qualify and form 774 consecutive groups.
+
+With a minimum of three sensors, 918 hours qualify and form 425 groups.
+
+With a minimum of four sensors, 585 hours qualify and form 266 groups.
+
+With a minimum of six sensors, 280 hours qualify and form 121 groups.
+
+With a minimum of eight sensors, 145 hours qualify and form 61 groups.
+
+The published v1 framework uses three sensors, producing the 425-Pulse result.
+
+The score threshold is also a design parameter. The current system uses |score| ≥ 3 for review-ready observations. Higher thresholds would retain fewer, more extreme sensor-hours, while lower thresholds would retain more deviations.
+
+This sensitivity is not a weakness of the framework; it is part of the definition of any rule-based detection system. What matters is that the parameters are explicit enough for alternative settings to be evaluated.
+
+A natural next research step would be systematic threshold calibration. For example, future work could compare alternative score and sensor-count thresholds against manually reviewed cases, labelled events, held-out data, precision-recall criteria or stability measures.
+
+That would allow the current transparent design threshold to evolve into an empirically calibrated threshold while preserving the interpretability of the pipeline.
+
+9. A Complete Example: Town Hall West on New Year’s Day
+
+A single observation illustrates how the full pipeline works.
+
+Consider Town Hall West, sensor 4, at 00:00 on 1 January 2025.
+
+The observed pedestrian count is 6,217.
+
+The corresponding baseline group contains 46 eligible observations.
+
+Its baseline median is 142.5.
+
+Its raw MAD is 39.
+
+The signed deviation is therefore:
+
+6,217 - 142.5 = 6,074.5.
+
+The score is:
+
+6,074.5 / 39 = 155.7564.
+
+The observation is therefore far above its local baseline.
+
+Its direction is above normal, its intensity is extreme, and its baseline confidence is high. It consequently satisfies the review-ready rule.
+
+The contextual metadata for the hour records that it is a public holiday and school-holiday period, with no rainfall and wind speed of 4.9.
+
+The public-holiday status is important for understanding how baseline construction and scoring are separated.
+
+Because public holidays are excluded from baseline construction, this New Year’s observation does not contribute to the empirical definition of an ordinary Wednesday-at-midnight condition. However, it can still be scored against the baseline built from eligible comparison observations.
+
+The 00:00 observation is not isolated.
+
+At sensor 4, review-ready above-baseline observations continue through 01:00, 02:00, 03:00, 04:00 and 05:00. These six strictly consecutive, same-direction hours are joined into one Episode.
+
+The Episode has a peak score of 258.8125 and a mean absolute score of 139.3911.
+
+During the same period, multiple other sensors also contain above-baseline Episodes. The cross-sensor co-occurrence rule is therefore satisfied, allowing these sensor-level Episodes to contribute to a Pulse.
+
+The example demonstrates exactly what the pipeline can establish from its own data.
+
+Town Hall West recorded an observation that was extremely high relative to the usual distribution for the same location, weekday category and hour.
+
+The departure persisted for several consecutive hours.
+
+Other locations in the research network displayed same-direction departures during an overlapping period.
+
+These are direct analytical observations.
+
+Several stronger claims would require additional evidence.
+
+The value 6,217 should not automatically be interpreted as 6,217 unique individuals because the sensor measures pedestrian counts rather than population identity.
+
+The deviation alone does not establish that New Year celebrations caused the entire increase.
+
+It also cannot decompose the observed change into separate contributions from celebrations, transport operations, road closures, visitor movement, venue activity or other conditions.
+
+Finally, a score of 155.7564 should not be interpreted as a conventional probability statement. It indicates an extremely large departure relative to the raw MAD of this particular empirical baseline group.
+
+The example therefore shows both the power and the intended restraint of the framework. The data can identify an exceptionally strong, persistent and cross-location departure without requiring the detection algorithm to make a causal claim.
+
+10. How External Evidence Is Added, and Why It Is Not the Same as Causality
+
+Once Episodes and Pulses have been produced by fixed rules, a subset of signals is selected for manual review.
+
+The evidence process follows a deliberate order:
+
+first detect the signal from the sensor data;
+
+then select cases for investigation;
+
+then search public sources covering weather, holidays, events, transport changes and other relevant contextual factors;
+
+then assess whether the timing and location described by those sources overlap with the detected signal;
+
+and finally record the evidence source, overlap status and remaining uncertainty.
+
+The current evidence layer contains 16 purposively selected review cases and 64 manually reviewed evidence links.
+
+Fifteen Pulses are associated with 63 of those links. One additional isolated Episode is associated with one link.
+
+The cases were selected to expose different directions, durations, network scopes, contexts and evidence outcomes. They therefore serve as analytical case studies rather than a statistically representative sample of all 425 Pulses.
+
+When the project labels evidence as a verified overlap, the term has a deliberately narrow meaning.
+
+It means that a reviewed source describes a relevant circumstance whose temporal range overlaps the detected signal and whose contextual relationship to the review target is considered sufficiently relevant.
+
+It does not mean that the source proves causation.
+
+If a public event overlaps a high pedestrian Pulse, the project can state that the detected signal and the event overlap in time, and where appropriate in location. It cannot infer from this overlap alone that the event generated the full signal.
+
+Multiple processes may operate simultaneously in a city. Weather, transport disruption, road management, nearby venues, tourism, ordinary commuting variation and unrecorded local conditions may all contribute to observed movement.
+
+Separating those contributions would require a stronger research design. Depending on the question, this might involve comparison locations, event-study designs, counterfactual modelling, quasi-experimental identification, external treatment information or other causal-inference approaches.
+
+The present framework intentionally stops before that stage.
+
+This is also why unexplained cases are analytically useful.
+
+One reviewed example at Queen Victoria Market contains an eight-hour above-baseline isolated Episode for which the currently reviewed public sources did not provide a sufficiently matching nighttime event.
+
+The appropriate conclusion is not that nothing occurred.
+
+It is that no matching evidence sufficient to explain the Episode was identified within the current search scope and source coverage.
+
+Such cases expose the boundary between observed urban signals and publicly documented context. They may reflect undocumented activity, incomplete source coverage, sensor-specific conditions, ordinary stochastic variation or mechanisms not included in the present evidence layer.
+
+Rather than being discarded, they remain visible as part of the analytical record.
+
+11. What Can and Cannot Be Concluded?
+
+The strongest conclusions from the current project are methodological and empirical rather than universal or causal.
+
+At the empirical level, the selected research network displays substantial variation in the duration, direction and sensor participation structure of detected deviations.
+
+New Year’s Day provides one clear example.
+
+An above-baseline Pulse occurs from 00:00 to 05:00. Hourly active-sensor counts are 12, 11, 12, 12, 12 and 9. Therefore, at least nine sensors are active in every hour of the six-hour period, the peak is twelve, and all twelve sensors participate at some point.
+
+This is followed by a below-baseline phase from 06:00 to 10:00. Hourly active-sensor counts are 8, 12, 11, 10 and 7. Again, participation changes from hour to hour even though the union of participating sensors across the interval is twelve.
+
+The important pattern is therefore not simply “12 out of 12 sensors”. It is a temporal transition from widespread above-baseline activity to widespread below-baseline activity, with the exact level of sensor participation varying continuously through the two phases.
+
+The reviewed wet-weather examples also demonstrate variation in temporal structure.
+
+On 6 January, a below-baseline Pulse lasts from 07:00 to 09:00. Between six and nine sensors are active per hour, ten sensors participate at some point, and the mean active-sensor count is eight. Recorded rainfall totals 3.6 mm across three rain hours.
+
+On 2 July, another reviewed below-baseline Pulse lasts from 12:00 to 20:00. Hourly participation ranges from three to eleven sensors, all twelve sensors participate at some point, and mean participation is approximately 8.67 sensors. Recorded rainfall totals 10.4 mm across eight rain hours.
+
+The defensible observation is that two reviewed below-baseline Pulses overlapping wet-weather conditions display different durations and sensor participation trajectories.
+
+The framework does not need to conclude that equivalent weather caused different city-wide effects. Such a claim would require control of other conditions and a causal design.
+
+Activity-related cases show a similar principle.
+
+A reviewed Melbourne Marathon signal contains a one-hour above-baseline Pulse with nine simultaneously active sensors.
+
+A reviewed evening case on 17 December lasts eight hours, ranges from three to eight active sensors per hour, includes ten sensors in its full-period union, and averages 5.75 active sensors. Parts of the period overlap with graduation and Christmas-related activities.
+
+Both are above-baseline cases associated with known activity contexts, but their temporal and network structures are different.
+
+The appropriate conclusion is therefore descriptive: event-overlapping signals within the reviewed case set do not all share the same duration or participation structure.
+
+The project also identifies strong differences in Pulse counts across months. Under the current rules, January contains 59 Pulses, February 26, March 54, April 57, May 18, June 22, July 19, August 15, September 12, October 16, November 47 and December 80.
+
+These counts establish that the current detection rule produces different monthly frequencies.
+
+They do not yet establish a seasonal law.
+
+The present baseline pools observations across the year within each sensor-day-hour group rather than explicitly modelling month or season. Consequently, part of the detected monthly variation may itself contain seasonal change.
+
+This creates a particularly useful direction for further research. A season-aware baseline could test whether the broad annual structure remains, contracts or changes when summer, winter and transitional periods receive separate reference distributions.
+
+Sensor-level participation also varies substantially.
+
+The 12 sensors have identical baseline sample-sufficiency structures: each contains 132 high-confidence groups and 36 medium-confidence groups. Nevertheless, their review-ready hours, Episodes and Pulse participation counts differ.
+
+For example, Pulse participation ranges from 61 for sensor 59 to 232 for sensor 212.
+
+These differences are real outputs of the detection system, but they should not automatically be interpreted as a ranking of which locations are “most active” or “most abnormal”.
+
+They can reflect several interacting factors: actual pedestrian behaviour, the shape of local count distributions, MAD magnitude, sensor placement and orientation, device characteristics and the effect of applying common decision thresholds across heterogeneous sites.
+
+The variation is therefore most valuable as a source of further questions.
+
+A future location-calibration study could examine whether sensor-specific thresholds, normalized dispersion models or hierarchical baselines change these participation patterns.
+
+Several other extensions follow naturally from the current framework.
+
+Seasonality could be represented explicitly rather than absorbed into a year-wide weekday-hour reference.
+
+Event information could be integrated more systematically into baseline construction, especially for recurring major events.
+
+Spatial relationships could move from visualization into the grouping algorithm through distance, precinct, street-network or topology-aware methods.
+
+Thresholds could be evaluated using annotated cases, held-out periods or other external validation targets.
+
+Timezone-aware modelling could represent daylight-saving transitions at full timestamp fidelity.
+
+School-holiday treatment could be tested as an alternative baseline policy rather than remaining only a contextual flag.
+
+The selected 12-sensor network could also be compared with larger or differently sampled networks to assess geographical robustness.
+
+These are best understood as opportunities to increase resolution and inferential depth, not as prerequisites for the current framework to function.
+
+The present v1 pipeline already establishes a coherent analytical chain:
+
+raw observations become a complete hourly research panel;
+
+each hour receives a context-specific empirical baseline;
+
+robust statistics describe normal level and variability;
+
+strong deviations become review-ready observations;
+
+consecutive same-direction observations become Episodes;
+
+simultaneous Episodes across multiple sites become Pulses;
+
+and external evidence is attached after detection without automatically being converted into causal explanation.
+
+Within the purposively selected and manually reviewed cases, similar contextual labels can coexist with substantially different temporal durations and sensor-participation patterns. Some detected signals also remain unexplained after evidence review.
+
+This suggests that the most defensible contribution of the project is not a claim that it has discovered a universal law of Melbourne pedestrian behaviour.
+
+Its stronger contribution is methodological.
+
+The v1 workflow demonstrates that urban pedestrian sensor data can be transformed into an interpretable hierarchy of deviations, Episodes and cross-location Pulses while retaining hourly participation structure, explicit thresholds, evidence provenance and uncertainty.
+
+It provides a system for asking more precise questions about urban rhythm.
+
+Where did activity depart from its usual local pattern?
+
+How long did that departure persist?
+
+Was it isolated or visible across several locations?
+
+How did participation change from hour to hour?
+
+What documented circumstances overlap with the signal?
+
+Which signals remain unexplained?
+
+And how do the answers change when the baseline, sensor network, temporal model, spatial model or thresholds are refined?
+
+In this sense, the project does not attempt to turn every unusual sensor pattern into a definitive story about the city.
+
+It builds a reproducible analytical layer between raw urban sensing data and interpretation.
+
+That layer is the central result of the current study, and it also provides the foundation for progressively more detailed urban, spatial and causal research in future versions.

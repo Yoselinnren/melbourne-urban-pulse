@@ -49,6 +49,7 @@ __pycache__/
 # data
 data/raw/
 data/processed/
+/outputs/
 
 # local env
 .env

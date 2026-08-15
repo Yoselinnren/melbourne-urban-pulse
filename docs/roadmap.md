@@ -6,7 +6,7 @@ Deliver Melbourne Urban Pulse as a complete English-language research case-study
 
 The final portfolio architecture is intentionally broader than this repository: a later personal portfolio and CV will link into the Melbourne Urban Pulse project Hero, research narrative, and Explorer. The portfolio shell is deferred by researcher decision and is not a blocker for the project's first public release; `/` may remain the current lightweight project entry until that separate phase begins.
 
-## Current baseline
+## Release baseline
 
 Completed:
 
@@ -16,19 +16,20 @@ Completed:
 - an approved annual Explorer visual system with spatial, temporal, filter, Pulse, and sensor states;
 - responsive Explorer behaviour, accessible interaction semantics, and browser acceptance;
 - 64 reviewed evidence matches covering 15 Pulses and one isolated episode;
-- connected Figma workspace containing the project cover, Explorer design system and screens, and scaffolded narrative and methodology pages;
-- GitHub-to-Vercel deployment, custom-domain DNS, and SSL for `yoreny.com`, established early as release infrastructure.
+- an approved research thesis and four evidence-bounded case groups;
+- an approved desktop/mobile visual and motion system;
+- a complete responsive narrative, methodology, limitations, selected-case links, and Explorer handoff;
+- GitHub-to-Vercel deployment, custom-domain DNS, SSL, and production verification for `www.yoreny.com`.
 
-Still required:
+Deferred beyond the project release:
 
-- research-result framing and selected-case narrative;
-- a complete Figma visual and motion system for the Hero, narrative, methodology, and responsive states;
-- implementation and acceptance of the full website outside the Explorer;
-- public-release and research-application handoff material.
+- personal portfolio/CV identity and content;
+- additional transport, cycling, or edge-sensing modes;
+- causal modelling, continuous spatial interpolation, and a composite Urban Pulse Index.
 
-## Working workflow
+## Completed delivery workflow
 
-The remaining work follows this order. A later stage does not begin until the previous gate is approved.
+The release followed this gated order. Each stage was approved before work advanced to the next gate.
 
 1. **Result framing** — compare reviewed cases by spatial scope, direction, duration, evidence combination, ambiguity, and departure from expectation.
 2. **Case selection** — choose a small contrasting set that includes an unexpected spatial pattern, a contrasting response, an ambiguous multi-factor case, and unresolved context where evidence permits.
@@ -37,6 +38,19 @@ The remaining work follows this order. A later stage does not begin until the pr
 5. **Full visual design** — complete and review the Hero, narrative chapters, selected cases, methodology, Explorer transition, mobile layouts, loading, reduced-motion, and fallback states in Figma.
 6. **Vertical-slice implementation** — implement the Hero, one selected case, and the transition into methodology/Explorer before expanding the full site.
 7. **Full implementation and acceptance** — finish the narrative site, verify claims against project data, and run responsive, accessibility, performance, browser, and physical-display checks.
+
+## Post-release critical review
+
+The next phase reviews the released argument rather than expanding its feature set. It will examine:
+
+1. language that sounds generic, inflated, repetitive, or AI-authored;
+2. whether explanations distinguish observation, interpretation, evidence overlap, and unsupported causation;
+3. whether every published data conclusion is reproducible and proportionate to the method;
+4. whether the project process, decisions, exclusions, and research logic form a coherent chain;
+5. whether the website explains the analytical principles and complete methodology at the right depth;
+6. whether the visual system has more artistic and spatial potential without obscuring evidence, accessibility, or performance.
+
+Any resulting change must preserve the verified data contract and non-causal evidence boundary. Aesthetic expansion and new analytical claims require separate review.
 
 Assistant responsibilities:
 

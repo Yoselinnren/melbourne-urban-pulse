@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Yoreny | Research Portfolio",
+  title: "Siyang | Research Portfolio",
   description:
-    "Research portfolio featuring Melbourne Urban Pulse, an inspectable urban data research project.",
+    "Research portfolio featuring Melbourne Urban Pulse, an interpretable urban data study built from public pedestrian sensor data.",
   icons: {
     icon: "/brand/yoreny-mark.png",
     apple: "/brand/yoreny-mark.png",

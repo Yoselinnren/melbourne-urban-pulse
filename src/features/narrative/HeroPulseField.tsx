@@ -61,11 +61,11 @@ export default function HeroPulseField() {
   return (
     <div ref={fieldRef} className={`pulse-field pulse-field--${state} ${active ? "is-active" : ""}`} aria-busy={state === "loading"}>
       <div className="pulse-field__head">
-        <span>URBAN PULSE FIELD · SELECTED CASE</span>
-        <strong>New Year phase 01 · network-wide above baseline</strong>
-        <small>01 JAN 2025 · 00:00–05:00 · 12/12 SENSORS · 6 HOURS</small>
+        <span>SELECTED PULSE · NEW YEAR, PHASE 1</span>
+        <strong>Above local baselines across the research network</strong>
+        <small>1 JAN 2025 · 00:00–05:00 · 9–12 ACTIVE SENSORS PER HOUR · 12 INVOLVED</small>
       </div>
-      <div className="pulse-field__plot" role="img" aria-label="Twelve discrete sensor anomaly traces">
+      <div className="pulse-field__plot" role="img" aria-label="Twelve sensor-level peak-deviation marks for the selected Pulse">
         <div className="pulse-field__grid" aria-hidden="true" />
         <div className="pulse-field__baseline" aria-hidden="true" />
         {state === "loading" ? (
@@ -86,9 +86,9 @@ export default function HeroPulseField() {
         )}
       </div>
       <div className="pulse-field__foot">
-        <span>Discrete sensor observations · no interpolated city surface</span>
-        <span>{failed ? "STATIC FALLBACK · FINAL VALUES" : "▲ ABOVE BASELINE · ● SELECTED PHASE"}</span>
-        <strong>06:00–10:00 → network-wide below baseline</strong>
+        <span>Discrete sensor results · no interpolated city surface</span>
+        <span>{failed ? "STATIC FALLBACK · FINAL VALUES" : "▲ ABOVE BASELINE · ● SELECTED PULSE"}</span>
+        <strong>06:00–10:00 → below-baseline phase</strong>
       </div>
     </div>
   );
