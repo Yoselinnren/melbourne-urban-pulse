@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   description:
     "Research portfolio featuring Melbourne Urban Pulse, an interpretable urban data study built from public pedestrian sensor data.",
   icons: {
-    icon: "/brand/yoreny-mark.png",
-    apple: "/brand/yoreny-mark.png",
+    icon: "/brand/yoreny-mark-burgundy-v1.png",
+    apple: "/brand/yoreny-mark-burgundy-v1.png",
   },
 };
 

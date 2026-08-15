@@ -7,7 +7,7 @@ export default function PortfolioEntry() {
       <nav aria-label="Portfolio" className="portfolio-nav">
         <Link className="portfolio-brand" href="/" aria-label="Yoreny home">
           <span className="portfolio-mark">
-            <Image src="/brand/yoreny-mark.png" alt="" width={42} height={42} priority />
+            <Image src="/brand/yoreny-mark-burgundy-v1.png" alt="" width={42} height={42} priority />
           </span>
           <span className="portfolio-wordmark">yoreny</span>
         </Link>
