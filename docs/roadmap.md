@@ -39,9 +39,9 @@ The release followed this gated order. Each stage was approved before work advan
 6. **Vertical-slice implementation** — implement the Hero, one selected case, and the transition into methodology/Explorer before expanding the full site.
 7. **Full implementation and acceptance** — finish the narrative site, verify claims against project data, and run responsive, accessibility, performance, browser, and physical-display checks.
 
-## Post-release critical review
+## Completed post-release critical review
 
-The next phase reviews the released argument rather than expanding its feature set. It will examine:
+The final review examined the released argument without expanding its feature set. It covered:
 
 1. language that sounds generic, inflated, repetitive, or AI-authored;
 2. whether explanations distinguish observation, interpretation, evidence overlap, and unsupported causation;
@@ -50,7 +50,7 @@ The next phase reviews the released argument rather than expanding its feature s
 5. whether the website explains the analytical principles and complete methodology at the right depth;
 6. whether the visual system has more artistic and spatial potential without obscuring evidence, accessibility, or performance.
 
-Any resulting change must preserve the verified data contract and non-causal evidence boundary. Aesthetic expansion and new analytical claims require separate review.
+The resulting changes preserved the verified data contract and non-causal evidence boundary. Future aesthetic expansion or new analytical claims would require separate review.
 
 Assistant responsibilities:
 

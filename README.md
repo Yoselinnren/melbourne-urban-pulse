@@ -4,7 +4,7 @@ Melbourne Urban Pulse is an interpretable urban data study and interactive resea
 
 The workflow compares hourly counts with sensor-specific weekday–hour baselines, groups strong consecutive departures into Episodes, and identifies same-direction co-occurrence across at least three research sensors as Pulses. Under the v1 definitions, it produced 425 Pulses and a purposive set of 16 manually reviewed cases.
 
-The released website is available at [www.yoreny.com](https://www.yoreny.com). The [release review](docs/milestone-8-review.md) records the earlier acceptance evidence; the current [roadmap](docs/roadmap.md) records the final critical-review phase.
+The released website is available at [www.yoreny.com](https://www.yoreny.com). The [release review](docs/milestone-8-review.md) records the acceptance evidence, and the [roadmap](docs/roadmap.md) records the completed delivery and final critical review.
 
 ## Research Question
 
